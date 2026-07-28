@@ -1,11 +1,14 @@
 package org.devlukadev.skywarstoolsmod;
 
+import cc.polyfrost.oneconfig.utils.hypixel.HypixelUtils;
+import net.minecraftforge.common.MinecraftForge;
 import org.devlukadev.skywarstoolsmod.command.ExampleCommand;
 import org.devlukadev.skywarstoolsmod.config.SWTConfig;
 import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import net.minecraftforge.fml.common.Mod;
 import cc.polyfrost.oneconfig.utils.commands.CommandManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import org.devlukadev.skywarstoolsmod.events.LastGameEXPEvent;
 
 /**
  * The entrypoint of the Example Mod that initializes it.
@@ -28,6 +31,9 @@ public class SkyWarsToolsMod {
     @Mod.EventHandler
     public void onInit(FMLInitializationEvent event) {
         config = new SWTConfig();
+
         CommandManager.INSTANCE.registerCommand(new ExampleCommand());
+        MinecraftForge.EVENT_BUS.register(new LastGameEXPEvent());
+        HypixelUtils.INSTANCE.initialize();
     }
 }
