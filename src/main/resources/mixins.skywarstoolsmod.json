@@ -1,8 +1,8 @@
 {
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.7",
-  "package": "org.polyfrost.example.mixin",
-  "refmap": "mixins.${id}.refmap.json",
+  "package": "org.devlukadev.skywarstoolsmod.mixin",
+  "refmap": "mixins.swt.refmap.json",
   "injectors": {
     "maxShiftBy": 5
   },

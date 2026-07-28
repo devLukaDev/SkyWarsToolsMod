@@ -1,6 +1,6 @@
-package org.polyfrost.example.command;
+package org.devlukadev.skywarstoolsmod.command;
 
-import org.polyfrost.example.ExampleMod;
+import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import cc.polyfrost.oneconfig.utils.commands.annotations.Command;
 import cc.polyfrost.oneconfig.utils.commands.annotations.Main;
 
@@ -10,12 +10,12 @@ import cc.polyfrost.oneconfig.utils.commands.annotations.Main;
  *
  * @see Command
  * @see Main
- * @see ExampleMod
+ * @see SkyWarsToolsMod
  */
-@Command(value = ExampleMod.MODID, description = "Access the " + ExampleMod.NAME + " GUI.")
+@Command(value = SkyWarsToolsMod.MODID, description = "Access the " + SkyWarsToolsMod.NAME + " GUI.")
 public class ExampleCommand {
     @Main
     private void handle() {
-        ExampleMod.INSTANCE.config.openGui();
+        SkyWarsToolsMod.INSTANCE.config.openGui();
     }
 }

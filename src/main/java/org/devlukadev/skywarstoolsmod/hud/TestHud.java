@@ -1,12 +1,12 @@
-package org.polyfrost.example.hud;
+package org.devlukadev.skywarstoolsmod.hud;
 
 import cc.polyfrost.oneconfig.hud.SingleTextHud;
-import org.polyfrost.example.config.TestConfig;
+import org.devlukadev.skywarstoolsmod.config.SWTConfig;
 
 /**
  * An example OneConfig HUD that is started in the config and displays text.
  *
- * @see TestConfig#hud
+ * @see SWTConfig#hud
  */
 public class TestHud extends SingleTextHud {
     public TestHud() {
