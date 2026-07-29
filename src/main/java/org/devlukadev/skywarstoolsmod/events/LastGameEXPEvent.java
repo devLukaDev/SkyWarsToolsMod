@@ -38,8 +38,7 @@ public class LastGameEXPEvent {
 
     @SubscribeEvent
     public void onResetChat(ClientChatReceivedEvent event) {
-        System.out.println("REAL TEST");
-        if (MessagePattern.isValidResetMessage(event.message)) { // TODO doesnt work - regex wroing?>!
+        if (MessagePattern.isValidResetMessage(event.message)) {
             lastXP = 0;
             SkyWarsToolsMod.config.lastGameEXPHud.setVisibility(true);
         }

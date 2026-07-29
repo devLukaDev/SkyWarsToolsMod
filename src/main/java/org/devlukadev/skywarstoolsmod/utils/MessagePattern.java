@@ -8,13 +8,15 @@ public final class MessagePattern {
 
 
     private static final Pattern SKYWARS_XP =
-            Pattern.compile("^\\+\\d+ SkyWars Experience! (Win|Kill|Assist)$");
+            Pattern.compile("^\\+\\d+ SkyWars Experience! \\((Win|Kill|Assist)\\)$");
 
-    private static final Pattern RESET_XP = Pattern.compile("^§r§eCages opened!§r§c FIGHT!§r$");
+    private static final Pattern RESET_XP = Pattern.compile("^§r§eCages opened!§r§c FIGHT!§r §r$");
 
     private static final Pattern GAME_END = Pattern.compile(
             "^You won! Want to play again\\? Click here!|You died! Want to play again\\? Click here!$"
-    );  //TODO check message
+    );
+
+    private static final Pattern SKYWARS_XP_POTION = Pattern.compile("^$");
 
 
     private MessagePattern() {
