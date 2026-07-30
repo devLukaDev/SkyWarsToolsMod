@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
+import org.devlukadev.skywarstoolsmod.utils.DelayedTask;
 
 import java.util.Arrays;
 
@@ -34,7 +35,6 @@ public class AutododgeEvents {
         ChatLib.chat("&aMap &e" + map + "&a is on dodge list! Dodging in &e5&a seconds...", true);
         ChatLib.chat("&cSNEAK TO CANCEL DODGING!", true);
 
-        Minecraft.getMinecraft().thePlayer.playSound("random.orb", 1.0F, 1.0F);
         ChatLib.showTitle("§cDodging", "SNEAK TO CANCEL", 10, 100, 10);
         dodgingEngaged = true;
         dodgeTicksLeft = 100; // 5 seconds * 20 ticks
@@ -58,6 +58,9 @@ public class AutododgeEvents {
         // --- dodge timeout firing ---
         if (dodgeTicksLeft > 0) {
             dodgeTicksLeft--;
+            if (dodgeTicksLeft % 20 == 0)
+                Minecraft.getMinecraft().thePlayer.playSound("random.orb", 1.0F, (-0.005F * dodgeTicksLeft) + 1);
+
         } else if (dodgeTicksLeft == 0) {
             dodgeTicksLeft = -1;
             dodgingEngaged = false;
