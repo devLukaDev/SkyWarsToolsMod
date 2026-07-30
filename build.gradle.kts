@@ -34,7 +34,7 @@ blossom {
 version = mod_version
 // Sets the group, make sure to change this to your own. It can be a website you own backwards or your GitHub username.
 // e.g. com.github.<your username> or com.<your domain>
-group = "org.polyfrost"
+group = "org.devlukadev"
 
 // Sets the name of the output jar (the one you put in your mods folder and send to other people)
 // It outputs all versions of the mod into the `versions/{mcVersion}/build` directory.
@@ -84,6 +84,7 @@ sourceSets {
 // Adds the Polyfrost maven repository so that we can get the libraries necessary to develop the mod.
 repositories {
     maven("https://repo.polyfrost.org/releases")
+    maven("https://repo.hypixel.net/repository/Hypixel/") // From https://github.com/HypixelDev/ForgeModAPI
 }
 
 // Configures the libraries/dependencies for your mod.
@@ -99,6 +100,16 @@ dependencies {
         compileOnly("org.spongepowered:mixin:0.7.11-SNAPSHOT")
         shade("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-beta17")
     }
+
+    // VV https://github.com/HypixelDev/ForgeModAPI
+    val version = "1.0.2"
+    dependencies {
+        modImplementation("net.hypixel:mod-api-forge:$version")
+        // If you use ForgeGradle 2 you might need to use fg.deobf or deobfCompile instead. Consult your MDK for tips on how
+        // to depend on an obfuscated dependency
+        // TODO https://github.com/HypixelDev/ForgeModAPI#bundling-the-hypixel-mod-api
+    }
+    // ^^
 }
 
 tasks {
