@@ -7,8 +7,8 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
+import org.devlukadev.skywarstoolsmod.autododge.AutododgeStorage;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
-import org.devlukadev.skywarstoolsmod.utils.DelayedTask;
 
 import java.util.Arrays;
 
@@ -23,8 +23,10 @@ public class AutododgeEvents {
     public static void onLocationReceived(ClientboundLocationPacket packet) {
 
         if (!packet.getMap().isPresent()) return; // In a lobby
+        if (!SkyWarsToolsMod.config.autododgeEnabled) return;
+
         final String map = packet.getMap().get();
-        final String[] dodgeMaps = SkyWarsToolsMod.config.autododgeMaps.split(",");
+        final String[] dodgeMaps = AutododgeStorage.load().toArray(new String[0]);
         if (dodgeMaps.length == 0) {
             ChatLib.chat("&cYour Autododge config has no maps. Is it malformed?", true);
             return;
@@ -53,6 +55,7 @@ public class AutododgeEvents {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         // For the countdown
+        if (!SkyWarsToolsMod.config.autododgeEnabled) return;
         if (event.phase != TickEvent.Phase.END) return;
 
         // --- dodge timeout firing ---
@@ -81,6 +84,7 @@ public class AutododgeEvents {
 
     @SubscribeEvent
     public void onChatReceived(ClientChatReceivedEvent event) {
+        if (!SkyWarsToolsMod.config.autododgeEnabled) return;
         String msg = event.message.getFormattedText();
 
         final String GAME_STARTS_SOON = "§r§e§r§eThe game starts in §r§a§r§c1§r§e second!§r§e§r";

@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 public class LocationUtil {
 
-    public static ClientboundLocationPacket currentLocation;
+    public static ClientboundLocationPacket currentLocation = null;
 
     private static final List<Consumer<ClientboundLocationPacket>> listeners = new ArrayList<>();
 
@@ -33,5 +33,11 @@ public class LocationUtil {
         for (Consumer<ClientboundLocationPacket> listener : listeners) {
             listener.accept(packet);
         }
+    }
+
+    public static boolean isInSkyWars(){
+        if (currentLocation == null) return false;
+        if (!currentLocation.getServerType().isPresent()) return false;
+        return currentLocation.getServerType().get().getName().equals("SkyWars");
     }
 }

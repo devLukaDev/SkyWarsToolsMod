@@ -15,6 +15,13 @@ public class ChatLib {
         Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(colored));
     }
 
+    public static void chat(String formattedMessage) {
+        formattedMessage = prefix + formattedMessage;
+        String colored = formattedMessage.replace('&', '§');
+
+        Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(colored));
+    }
+
     public static void chat(ChatComponentText message, boolean appendPrefix) {
         if (appendPrefix) {
             ChatComponentText prefixComponent = new ChatComponentText(prefix);
@@ -22,6 +29,14 @@ public class ChatLib {
         } else {
             Minecraft.getMinecraft().thePlayer.addChatMessage(message);
         }
+
+    }
+
+    public static void chat(ChatComponentText message) {
+
+        ChatComponentText prefixComponent = new ChatComponentText(prefix);
+        Minecraft.getMinecraft().thePlayer.addChatMessage(prefixComponent.appendSibling(message));
+
 
     }
 

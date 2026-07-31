@@ -6,6 +6,7 @@ import cc.polyfrost.oneconfig.utils.commands.annotations.Command;
 import cc.polyfrost.oneconfig.utils.commands.annotations.Main;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
+import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
 
 /**
  * An example command implementing the Command api of OneConfig.
@@ -19,9 +20,6 @@ import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 public class ExampleCommand {
     @Main
     private void handle() {
-//        SkyWarsToolsMod.config.openGui();
-        ChatLib.chat(LocationUtil.getCurrentLocation().toString(), true);
-        Minecraft.getMinecraft().thePlayer.playSound("random.orb", 1.0F, 1.0F);
-
+        ClientScheduler.schedule(40, () -> Minecraft.getMinecraft().thePlayer.playSound("random.orb", 1.0F, 1.0F));
     }
 }

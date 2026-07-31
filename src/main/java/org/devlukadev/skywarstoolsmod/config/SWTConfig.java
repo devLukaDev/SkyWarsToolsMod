@@ -7,11 +7,14 @@ import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 import cc.polyfrost.oneconfig.config.data.OptionSize;
 
+import cc.polyfrost.oneconfig.utils.gui.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
+import org.devlukadev.skywarstoolsmod.hud.AutododgeScreen;
 import org.devlukadev.skywarstoolsmod.hud.LastGameEXPHud;
 
 /**
@@ -43,14 +46,14 @@ public class SWTConfig extends Config {
     )
     public boolean autododgeEnabled = true;
 
-    @Text(
-            name = "Maps to Autododge",
-            description = "Put maps here, divided with commas",
-            placeholder = "Chronos,Firelink Shrine,Aegis",
-            category = "Autododge", multiline = true
+    @Button(
+            name = "Maps to Dodge",
+            text = "Open GUI",
+            category = "Autododge"
     )
-    public String autododgeMaps = "";
-
+    Runnable runnable = () -> {
+        GuiUtils.displayScreen(new AutododgeScreen());
+    };
 
     @Switch(
             name = "Enable Autododge Sound",
@@ -107,11 +110,12 @@ public class SWTConfig extends Config {
     public boolean aboutInfo;
 
     public SWTConfig() {
-        super(new Mod(SkyWarsToolsMod.NAME, ModType.UTIL_QOL), SkyWarsToolsMod.MODID + ".json");
+        super(new Mod(SkyWarsToolsMod.NAME, ModType.UTIL_QOL, "/logo-480.png"), SkyWarsToolsMod.MODID + ".json");
         initialize();
 
 
         addDependency("autododgeSoundEnabled", "autododgeEnabled");
         addDependency("autododgeLobby", "autododgeEnabled");
+        addDependency("autododgeMaps", "autododgeEnabled");
     }
 }

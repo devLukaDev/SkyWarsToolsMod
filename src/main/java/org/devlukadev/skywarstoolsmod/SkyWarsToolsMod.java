@@ -11,9 +11,11 @@ import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import net.minecraftforge.fml.common.Mod;
 import cc.polyfrost.oneconfig.utils.commands.CommandManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import org.devlukadev.skywarstoolsmod.enhancedwho.EnhancedWho;
 import org.devlukadev.skywarstoolsmod.events.AutododgeEvents;
 import org.devlukadev.skywarstoolsmod.events.LastGameEXPEvents;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
+import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
 
 /**
  * The entrypoint of the Example Mod that initializes it.
@@ -38,6 +40,7 @@ public class SkyWarsToolsMod {
         config = new SWTConfig();
         HypixelUtils.INSTANCE.initialize();
         CommandManager.INSTANCE.registerCommand(new ExampleCommand());
+        MinecraftForge.EVENT_BUS.register(new ClientScheduler());
 
         // Hypixel Mod API
         HypixelModAPI.getInstance().subscribeToEventPacket(ClientboundLocationPacket.class);
@@ -51,6 +54,9 @@ public class SkyWarsToolsMod {
         // Autododge
         LocationUtil.addListener(AutododgeEvents::onLocationReceived);
         MinecraftForge.EVENT_BUS.register(new AutododgeEvents());
+
+        // Enhanced Who
+        MinecraftForge.EVENT_BUS.register(new EnhancedWho());
 
 
     }
