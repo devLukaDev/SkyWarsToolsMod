@@ -29,6 +29,13 @@ public final class MessagePattern {
     public static final Pattern SKYWARS_XP_MULT = Pattern.compile(
             "^x\\d*\\.?\\d* SkyWars Experience! Win (.*)$");
 
+    /**
+     * Regex pattern for <pre>SkyWarsTools has joined (1/12)!</pre>
+     */
+    public static final Pattern JOIN_PATTERN = Pattern.compile(
+            "^§r§e§r(?:§.)?(?<player>\\w+)§r§r§r§e has joined \\(§r§b(?<current>\\d+)§r§r§r§e/§r§b(?<max>\\d+)§r§r§r§e\\)!§r§e§r$"
+    );
+
     private MessagePattern() {
     }
 

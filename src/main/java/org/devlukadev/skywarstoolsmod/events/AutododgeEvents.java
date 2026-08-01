@@ -2,6 +2,11 @@ package org.devlukadev.skywarstoolsmod.events;
 
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatStyle;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -20,7 +25,7 @@ public class AutododgeEvents {
     private static int dodgeTicksLeft = -1;
 
     // Static because called elsewhere by hypixel mod api handler
-    public static void onLocationReceived(ClientboundLocationPacket packet) {
+    public void onLocationReceived(ClientboundLocationPacket packet) {
 
         if (!packet.getMap().isPresent()) return; // In a lobby
         if (!SkyWarsToolsMod.config.autododgeEnabled) return;
@@ -76,7 +81,19 @@ public class AutododgeEvents {
                 && Minecraft.getMinecraft().thePlayer.isSneaking()) {
             cancelDodge();
             ChatLib.chat("&cDodging cancelled!", true);
-            ChatLib.chat("&aWant to remove this map from the dodge list? Use &6/autododge remove <mapName>", true);
+
+            IChatComponent prefix = new ChatComponentText(
+                    EnumChatFormatting.GREEN + "Want to remove this map from the dodge list? "
+            );
+
+            ChatComponentText link = new ChatComponentText("Open the config here.");
+            ChatStyle style = new ChatStyle();
+            style.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/autododge"));
+            style.setUnderlined(true);
+            style.setColor(EnumChatFormatting.AQUA);
+            link.setChatStyle(style);
+
+            prefix.appendSibling(link);
 
             ChatLib.showTitle("§aCancelled dodge", "Have fun!", 10, 10, 10);
         }

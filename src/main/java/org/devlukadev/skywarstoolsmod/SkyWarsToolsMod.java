@@ -6,6 +6,7 @@ import net.hypixel.modapi.HypixelModAPI;
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import net.minecraftforge.common.MinecraftForge;
 import org.devlukadev.skywarstoolsmod.command.ExampleCommand;
+import org.devlukadev.skywarstoolsmod.command.OpenAutododgeGUI;
 import org.devlukadev.skywarstoolsmod.config.SWTConfig;
 import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.devlukadev.skywarstoolsmod.enhancedwho.EnhancedWho;
 import org.devlukadev.skywarstoolsmod.events.AutododgeEvents;
 import org.devlukadev.skywarstoolsmod.events.LastGameEXPEvents;
+import org.devlukadev.skywarstoolsmod.tablevels.TabLevels;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
 
@@ -48,15 +50,26 @@ public class SkyWarsToolsMod {
 
         // Last Game EXP
         LastGameEXPEvents lastGameEXPEvents = new LastGameEXPEvents();
+
         MinecraftForge.EVENT_BUS.register(lastGameEXPEvents);
         EventManager.INSTANCE.register(lastGameEXPEvents);
 
         // Autododge
-        LocationUtil.addListener(AutododgeEvents::onLocationReceived);
-        MinecraftForge.EVENT_BUS.register(new AutododgeEvents());
+        AutododgeEvents autododge = new AutododgeEvents();
+
+        LocationUtil.addListener(autododge::onLocationReceived);
+        MinecraftForge.EVENT_BUS.register(autododge);
+
+        CommandManager.INSTANCE.registerCommand(new OpenAutododgeGUI());
 
         // Enhanced Who
         MinecraftForge.EVENT_BUS.register(new EnhancedWho());
+
+        // TabLevels
+        TabLevels tabLevels = new TabLevels();
+
+        LocationUtil.addListener(tabLevels::onLocationReceived);
+        MinecraftForge.EVENT_BUS.register(tabLevels);
 
 
     }
