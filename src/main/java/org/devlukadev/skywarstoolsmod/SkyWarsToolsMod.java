@@ -68,7 +68,6 @@ public class SkyWarsToolsMod {
         // TabLevels
         TabLevels tabLevels = new TabLevels();
 
-        LocationUtil.addListener(tabLevels::onLocationReceived);
         MinecraftForge.EVENT_BUS.register(tabLevels);
 
 

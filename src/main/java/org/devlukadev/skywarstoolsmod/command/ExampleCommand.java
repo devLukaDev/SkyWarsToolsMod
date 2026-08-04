@@ -1,12 +1,16 @@
 package org.devlukadev.skywarstoolsmod.command;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import cc.polyfrost.oneconfig.utils.commands.annotations.Command;
 import cc.polyfrost.oneconfig.utils.commands.annotations.Main;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
+
+import java.util.Collection;
 
 /**
  * An example command implementing the Command api of OneConfig.
@@ -21,5 +25,8 @@ public class ExampleCommand {
     @Main
     private void handle() {
         ClientScheduler.schedule(40, () -> Minecraft.getMinecraft().thePlayer.playSound("random.orb", 1.0F, 1.0F));
+        NetHandlerPlayClient netHandler = Minecraft.getMinecraft().thePlayer.sendQueue;
+        Collection<NetworkPlayerInfo> players = netHandler.getPlayerInfoMap();
+        ChatLib.chat(String.valueOf(players.size()));
     }
 }

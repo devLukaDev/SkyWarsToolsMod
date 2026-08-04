@@ -10,32 +10,57 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SkyWarsRequestCache {
 
-        private static final Map<UUID, SkyWarsResponse> cache = new ConcurrentHashMap<>();
-        private static final Set<UUID> pending = ConcurrentHashMap.newKeySet();
-        private static final Map<UUID, Long> lastFetch = new ConcurrentHashMap<>();
-        private static final long TTL_MS = 60_000; // re-fetch after 1 min, tune as needed
+    private static final Map<UUID, SkyWarsResponse> cache = new ConcurrentHashMap<>();
+    private static final Set<UUID> pending = ConcurrentHashMap.newKeySet();
+    private static final Map<UUID, Long> lastFetch = new ConcurrentHashMap<>();
 
-        public static String getSuffix(UUID uuid, String playerName) {
-            SkyWarsResponse cached = cache.get(uuid);
+    public static int getCacheSize() {
+        return cache.size();
+    }
 
-            boolean stale = cached == null ||
-                    System.currentTimeMillis() - lastFetch.getOrDefault(uuid, 0L) > TTL_MS;
+    public static String getPrefix(UUID uuid) {
+        SkyWarsResponse cached = cache.get(uuid);
 
-            if (stale && pending.add(uuid)) { // add() returns false if already present
-                Fetch.getJsonAsync("https://api.skywarstools.com/api/skywars?player=" + playerName, SkyWarsResponse.class)
-                        .thenAccept(response -> {
-                            cache.put(uuid, response);
-                            lastFetch.put(uuid, System.currentTimeMillis());
-                            pending.remove(uuid);
-                        })
-                        .exceptionally(ex -> {
-                            System.err.println("Fetch failed: " + ex.getMessage());
-                            pending.remove(uuid); // allow retry later
-                            return null;
-                        });
-            }
+        boolean stale = (cached == null);
 
-            return cached != null ? " " + cached.display.levelFormattedWithBrackets : "";
+        if (stale && pending.add(uuid)) { // add() returns false if already present
+            Fetch.getJsonAsync("https://api.skywarstools.com/api/skywars?player=" + uuid, SkyWarsResponse.class)
+                    .thenAccept(response -> {
+                        cache.put(uuid, response);
+                        lastFetch.put(uuid, System.currentTimeMillis());
+                        pending.remove(uuid);
+                    })
+                    .exceptionally(ex -> {
+                        System.err.println("Fetch failed: " + ex.getMessage());
+                        pending.remove(uuid); // allow retry later
+                        return null;
+                    });
         }
+
+        return cached != null ? cached.display.levelFormattedWithBrackets : "";
+    }
+
+
+    public static SkyWarsResponse getBare(UUID uuid) {
+        SkyWarsResponse cached = cache.get(uuid);
+
+        boolean stale = (cached == null);
+
+        if (stale && pending.add(uuid)) { // add() returns false if already present
+            Fetch.getJsonAsync("https://api.skywarstools.com/api/skywars?player=" + uuid, SkyWarsResponse.class)
+                    .thenAccept(response -> {
+                        cache.put(uuid, response);
+                        lastFetch.put(uuid, System.currentTimeMillis());
+                        pending.remove(uuid);
+                    })
+                    .exceptionally(ex -> {
+                        System.err.println("Fetch failed: " + ex.getMessage());
+//                        pending.remove(uuid); // allow retry later
+                        return null;
+                    });
+        }
+
+        return cached;
+    }
 
 }
