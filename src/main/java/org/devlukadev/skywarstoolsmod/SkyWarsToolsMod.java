@@ -5,6 +5,7 @@ import cc.polyfrost.oneconfig.utils.hypixel.HypixelUtils;
 import net.hypixel.modapi.HypixelModAPI;
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.devlukadev.skywarstoolsmod.command.ExampleCommand;
 import org.devlukadev.skywarstoolsmod.command.OpenAutododgeGUI;
 import org.devlukadev.skywarstoolsmod.config.SWTConfig;
@@ -15,9 +16,11 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.devlukadev.skywarstoolsmod.enhancedwho.EnhancedWho;
 import org.devlukadev.skywarstoolsmod.events.AutododgeEvents;
 import org.devlukadev.skywarstoolsmod.events.LastGameEXPEvents;
-import org.devlukadev.skywarstoolsmod.tablevels.TabLevels;
+import org.devlukadev.skywarstoolsmod.updater.SWTUpdater;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
+
+import java.io.File;
 
 /**
  * The entrypoint of the Example Mod that initializes it.
@@ -35,6 +38,20 @@ public class SkyWarsToolsMod {
     @Mod.Instance(MODID)
     public static SkyWarsToolsMod INSTANCE; // Adds the instance of the mod, so we can access other variables.
     public static SWTConfig config;
+
+
+    private File cacheFolder;
+
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        this.cacheFolder = new File(event.getModConfigurationDirectory(), "swt");
+
+        new SWTUpdater(event.getSourceFile()).start();
+    }
+
+    public File getCacheFolder(){
+        return cacheFolder;
+    }
 
     // Register the config and commands.
     @Mod.EventHandler
@@ -66,9 +83,9 @@ public class SkyWarsToolsMod {
         MinecraftForge.EVENT_BUS.register(new EnhancedWho());
 
         // TabLevels
-        TabLevels tabLevels = new TabLevels();
-
-        MinecraftForge.EVENT_BUS.register(tabLevels);
+//        TabLevels tabLevels = new TabLevels();
+//        LocationUtil.addListener(tabLevels::onGameJoin);
+//        MinecraftForge.EVENT_BUS.register(tabLevels);
 
 
     }

@@ -70,7 +70,7 @@ public class LastGameEXPEvents {
 
         LocrawInfo.GameType type = event.info.getGameType();
 
-        System.out.println("Now in " + type);
+//        System.out.println("Now in " + type);
 
         if (type.equals(LocrawInfo.GameType.SKYWARS)) {
             SkyWarsToolsMod.config.lastGameEXPHud.setVisibility(true);

@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.tablevels.SkyWarsRequestCache;
+import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.NickDetector;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.responses.SkyWarsResponse;
@@ -25,8 +26,7 @@ import java.util.UUID;
         if (!LocationUtil.getCurrentLocation().getMap().isPresent()) return; // In a lobby
 
         UUID uuid = networkPlayerInfoIn.getGameProfile().getId();
-        String name = networkPlayerInfoIn.getGameProfile().getName();
-        if (NickDetector.isLikelyNicked(uuid)) {
+        if (NickDetector.isLikelyNicked(networkPlayerInfoIn)) {
             cir.setReturnValue("§c[?] " + cir.getReturnValue());
             return;
         }
