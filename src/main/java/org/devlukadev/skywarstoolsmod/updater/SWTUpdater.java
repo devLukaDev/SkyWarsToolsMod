@@ -34,7 +34,7 @@ public final class SWTUpdater extends ModUpdater {
         if (this.updateInfo != null) {
             final String releaseLink = "https://github.com/devLukaDev/SkyWarsToolsMod/releases";
             ChatLib.chat("&8--------");
-            ChatLib.chat("&4&l    MWE &6v" + this.updateInfo.version + " &2is available!");
+            ChatLib.chat("&4&l    SkyWarsToolsMod &6v" + this.updateInfo.version + " &2is available!");
 
             Minecraft.getMinecraft().thePlayer.addChatMessage(
                     new ChatComponentText(

@@ -16,7 +16,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.utils.JsonUtil;
-import org.devlukadev.skywarstoolsmod.utils.fetchutils.Fetch;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.HttpClient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -131,7 +130,7 @@ public abstract class ModUpdater {
         downloadFileTo(artifactInfo.url, newJarCacheFile, artifactInfo.digest);
         LOGGER.info("Downloaded {}", artifactInfo.name);
 
-        final File deleterFile = new File(cacheDir, "Deleter.jar");
+        final File deleterFile = new File(cacheDir, "jarjar/Deleter.jar");
         if (!unpackedDeleter.get()) {
             try (InputStream bundledDeleter = ModUpdater.class.getResourceAsStream("/jarjar/Deleter.jar")) {
                 if (bundledDeleter == null) {
@@ -230,13 +229,13 @@ public abstract class ModUpdater {
                 }
             }
         }
-        LOGGER.error("Could not find .jar file to download in lates release");
+        LOGGER.error("Could not find .jar file to download in latest release");
         return null;
     }
 
     protected void downloadFileTo(@NotNull String url, @NotNull File cacheFile, @Nullable String digest) throws IOException {
         final URLConnection connection = new URL(url).openConnection();
-        connection.setRequestProperty("User-Agent", "MWE-Updater");
+        connection.setRequestProperty("User-Agent", "SWT-Updater");
         connection.setConnectTimeout(10000);
         connection.setReadTimeout(10000);
 

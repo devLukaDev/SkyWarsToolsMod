@@ -101,13 +101,18 @@ public class SWTConfig extends Config {
     )
 
     // ==== About ====
+    // First one doesnt show for some reason
+    @Info(
+            text = "An error occurred :(",
+            type = InfoType.ERROR // Types are: INFO, WARNING, ERROR, SUCCESS
+    )
+    public static boolean ignored; // Useless. Java limitations with @annotation.
 
     @Info(
-            text = "See README.md in the mod's resources for full details.",
-            type = InfoType.INFO,
-            category = "About"
+            text = "Version: @VER@",
+            type = InfoType.INFO
     )
-    public boolean aboutInfo;
+    public static boolean ignored2; // Useless. Java limitations with @annotation.
 
     public SWTConfig() {
         super(new Mod(SkyWarsToolsMod.NAME, ModType.UTIL_QOL, "/logo-480.png"), SkyWarsToolsMod.MODID + ".json");
