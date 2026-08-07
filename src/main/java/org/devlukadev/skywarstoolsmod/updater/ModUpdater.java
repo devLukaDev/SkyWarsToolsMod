@@ -1,6 +1,6 @@
 package org.devlukadev.skywarstoolsmod.updater;
 
-// Original from Alexdory MWE
+// Original from Alexdoru MWE
 // https://github.com/Alexdoru/MWE
 
 import com.google.gson.JsonElement;
@@ -44,7 +44,8 @@ public abstract class ModUpdater {
 
     protected final Logger LOGGER;
     protected final File jarFile;
-    protected final String currentVersion;
+    protected final String currentV;
+    protected ComparableVersion latestVersion;
     protected final boolean isFeatherClient;
     protected final boolean automaticUpdate;
     protected volatile ArtifactInfo updateInfo;
@@ -62,7 +63,7 @@ public abstract class ModUpdater {
     public ModUpdater(File modJarFile, String name, String version, boolean autoInstall) {
         this.LOGGER = LogManager.getLogger(name + " Updater");
         this.jarFile = modJarFile;
-        this.currentVersion = version;
+        this.currentV = version;
         this.isFeatherClient = Loader.isModLoaded("feather");
         this.automaticUpdate = autoInstall;
     }
@@ -111,7 +112,7 @@ public abstract class ModUpdater {
         if (artifactInfo == null) {
             return null;
         }
-        final boolean isUpToDate = new ComparableVersion(this.currentVersion).compareTo(artifactInfo.version) >= 0;
+        final boolean isUpToDate = new ComparableVersion(this.currentV).compareTo(artifactInfo.version) >= 0;
         if (isUpToDate) {
             LOGGER.info("The mod is up to date!");
             return null;
@@ -130,7 +131,7 @@ public abstract class ModUpdater {
         downloadFileTo(artifactInfo.url, newJarCacheFile, artifactInfo.digest);
         LOGGER.info("Downloaded {}", artifactInfo.name);
 
-        final File deleterFile = new File(cacheDir, "jarjar/Deleter.jar");
+        final File deleterFile = new File(cacheDir, "Deleter.jar");
         if (!unpackedDeleter.get()) {
             try (InputStream bundledDeleter = ModUpdater.class.getResourceAsStream("/jarjar/Deleter.jar")) {
                 if (bundledDeleter == null) {

@@ -1,5 +1,5 @@
 package org.devlukadev.skywarstoolsmod.utils.fetchutils;
-// Original from Alexdory MWE
+// Original from Alexdoru MWE
 // https://github.com/Alexdoru/MWE
 
 import com.google.gson.JsonArray;
