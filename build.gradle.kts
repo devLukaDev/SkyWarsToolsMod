@@ -3,6 +3,8 @@
 import org.polyfrost.gradle.util.noServerRunConfigs
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
+// This is a base build.gradle.kts, from the PolyfrostExampleMod
+
 // Adds support for kotlin, and adds the Polyfrost Gradle Toolkit
 // which we use to prepare the environment.
 plugins {
@@ -51,8 +53,11 @@ loom {
     if (project.platform.isLegacyForge) {
         runConfigs {
             "client" {
-                programArgs("--tweakClass", "cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker")
-                property("mixin.debug.export", "true") // Outputs all mixin changes to `versions/{mcVersion}/run/.mixin.out/class`
+                programArgs("--tweakClass", "org.devlukadev.skywarstoolsmod.launch.SkyWarsToolsModTweaker")
+                property(
+                    "mixin.debug.export",
+                    "true"
+                ) // Outputs all mixin changes to `versions/{mcVersion}/run/.mixin.out/class`
             }
         }
     }
@@ -73,6 +78,7 @@ val shade: Configuration by configurations.creating {
 val modShade: Configuration by configurations.creating {
     configurations.modImplementation.get().extendsFrom(this)
 }
+val shadowImpl: Configuration by configurations.creating
 
 // Configures the output directory for when building from the `src/resources` directory.
 sourceSets {
@@ -101,15 +107,13 @@ dependencies {
         shade("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-beta17")
     }
 
-    // VV https://github.com/HypixelDev/ForgeModAPI
-    val version = "1.0.2"
-    dependencies {
-        modImplementation("net.hypixel:mod-api-forge:$version")
-        // If you use ForgeGradle 2 you might need to use fg.deobf or deobfCompile instead. Consult your MDK for tips on how
-        // to depend on an obfuscated dependency
-        // TODO https://github.com/HypixelDev/ForgeModAPI#bundling-the-hypixel-mod-api
-    }
-    // ^^
+    // https://github.com/HypixelDev/ForgeModAPI
+    val version = "1.0.1.2" // Make a 4-period SemVer, otherwise Hypixel's own Tweakers crashes (!) -> this is 1.0.2
+    modImplementation("net.hypixel:mod-api-forge:$version")
+    shadowImpl("net.hypixel:mod-api-forge-tweaker:$version")
+    // Also for combining Polyfrost and HypixelModAPI:
+    //https://claude.ai/share/402f120f-3ca4-4774-be9b-dbc06cfd5f81
+    // And many thanks to Yedel of course
 }
 
 tasks {
@@ -176,8 +180,9 @@ tasks {
     // include some dependencies within our mod jar file.
     named<ShadowJar>("shadowJar") {
         archiveClassifier.set("dev")
-        configurations = listOf(shade, modShade)
+        configurations = listOf(shade, modShade, shadowImpl)
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        relocate("net.hypixel.modapi.tweaker", "org.devlukadev.skywarstoolsmod.launch")
     }
 
     remapJar {
@@ -193,7 +198,7 @@ tasks {
                 "ForceLoadAsMod" to true, // We want to load this jar as a mod, so we force Forge to do so.
                 "TweakOrder" to "0", // Makes sure that the OneConfig launch wrapper is loaded as soon as possible.
                 "MixinConfigs" to "mixins.${mod_id}.json", // We want to use our mixin configuration, so we specify it here.
-                "TweakClass" to "cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker" // Loads the OneConfig launch wrapper.
+                "TweakClass" to "org.devlukadev.skywarstoolsmod.launch.SkyWarsToolsModTweaker" // Go into YedelModTweaker, to load multiple tweakers
             )
         }
         dependsOn(shadowJar)
