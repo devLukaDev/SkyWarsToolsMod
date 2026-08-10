@@ -3,6 +3,11 @@ package org.devlukadev.skywarstoolsmod.command;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import cc.polyfrost.oneconfig.utils.commands.annotations.Command;
 import cc.polyfrost.oneconfig.utils.commands.annotations.Main;
@@ -24,9 +29,32 @@ import java.util.Collection;
 public class ExampleCommand {
     @Main
     private void handle() {
-        ClientScheduler.schedule(40, () -> Minecraft.getMinecraft().thePlayer.playSound("random.orb", 1.0F, 1.0F));
-        NetHandlerPlayClient netHandler = Minecraft.getMinecraft().thePlayer.sendQueue;
-        Collection<NetworkPlayerInfo> players = netHandler.getPlayerInfoMap();
-        ChatLib.chat(String.valueOf(players.size()));
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        if (player == null) return;
+
+        ItemStack stack = player.getHeldItem();
+        if (stack == null) {
+            player.addChatMessage(new ChatComponentText("§cNo item in hand."));
+            return;
+        }
+
+        if (!stack.hasTagCompound()) {
+            player.addChatMessage(new ChatComponentText("§cHeld item has no NBT tag."));
+            return;
+        }
+
+        NBTTagCompound tag = stack.getTagCompound();
+        player.addChatMessage(new ChatComponentText("§eFull NBT: §f" + tag.toString()));
+
+        if (tag.hasKey("ExtraAttributes")) {
+            NBTTagCompound extraAttributes = tag.getCompoundTag("ExtraAttributes");
+            player.addChatMessage(new ChatComponentText("§aExtraAttributes keys:"));
+            for (String key : extraAttributes.getKeySet()) {
+                NBTBase value = extraAttributes.getTag(key);
+                player.addChatMessage(new ChatComponentText("  §b" + key + "§7: §f" + value.toString()));
+            }
+        } else {
+            player.addChatMessage(new ChatComponentText("§cNo ExtraAttributes tag on this item."));
+        }
     }
 }

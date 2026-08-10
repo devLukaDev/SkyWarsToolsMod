@@ -5,32 +5,55 @@ import cc.polyfrost.oneconfig.config.annotations.*;
 import cc.polyfrost.oneconfig.config.data.InfoType;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
-import cc.polyfrost.oneconfig.config.data.OptionSize;
 
 import cc.polyfrost.oneconfig.utils.gui.GuiUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
-import org.devlukadev.skywarstoolsmod.hud.AutododgeScreen;
-import org.devlukadev.skywarstoolsmod.hud.LastGameEXPHud;
+import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeScreen;
+import org.devlukadev.skywarstoolsmod.features.lastgameexp.LastGameEXPHud;
 
 /**
  * The main Config entrypoint that extends the Config type and inits the config options.
  * See <a href="https://docs.polyfrost.org/oneconfig/config/adding-options">this link</a> for more config Options
  */
 public class SWTConfig extends Config {
-
+    // ==== About ====
+    @Info(
+            text = "Version: @VER@",
+            type = InfoType.INFO
+    )
+    public static boolean ignoredb; // Useless. Java limitations with @annotation.
+    @Info(
+            text = "By devLukaDev",
+            type = InfoType.INFO
+    )
+    public static boolean adjhsa;
     // ==== EXP Display ====
+    @Switch(
+            name = "Enable EXP Display",
+            description = "Master switch for enabling/disabling the entire Last Game Experience feature.",
+            category = "LastGameEXP", subcategory = "Settings"
+    )
+    public boolean experienceMasterSwitch = true;
+    @Info(
+            text = "Use this instead of the HUD enable/disable switch.",
+            type = InfoType.WARNING, // Types are: INFO, WARNING, ERROR, SUCCESS
+            category = "LastGameEXP", subcategory = "Settings"
+    )
+    public static boolean asji; // Useless. Java limitations with @annotation.
+
+
     @Switch(
             name = "Show Only On Death/Win",
             description = "Only show the display when you are no longer alive, or have won",
             category = "LastGameEXP", subcategory = "Settings"
     )
     public boolean experienceShowTemp = false;
-
+    @Info(
+            type = InfoType.WARNING,
+            text = "Want to disable the HUD? Do so above!",
+            category = "LastGameEXP", subcategory = "HUD"
+    )
+    public static boolean ignored2; // Useless. Java limitations with @annotation.
     @HUD(
             name = "SkyWars EXP Display",
             category = "LastGameEXP", subcategory = "HUD"
@@ -99,20 +122,24 @@ public class SWTConfig extends Config {
             description = "Automatically send /who when the game starts",
             category = "Enhanced Who"
     )
-
-    // ==== About ====
-    // First one doesnt show for some reason
-    @Info(
-            text = "An error occurred :(",
-            type = InfoType.ERROR // Types are: INFO, WARNING, ERROR, SUCCESS
+    public boolean islandFinderAutoWho = false;
+    // === Item Cooldowns ===
+    @Switch(
+            name = "Enable Item Cooldowns HUD",
+            description = "Enables a HUD around the crosshair that shows relevant information on item cooldowns",
+            category = "CooldownsHUD"
     )
-    public static boolean ignored; // Useless. Java limitations with @annotation.
+    public boolean cooldownsHUDEnabled = true;
 
-    @Info(
-            text = "Version: @VER@",
-            type = InfoType.INFO
+    // ==== Fixes ====
+    @Switch(
+            name = "Kit Select Fix",
+            description = "Attempts to fix kit selecting",
+            category = "Fixes"
     )
-    public static boolean ignored2; // Useless. Java limitations with @annotation.
+    public boolean kitSelectFix = true;
+
+
 
     public SWTConfig() {
         super(new Mod(SkyWarsToolsMod.NAME, ModType.UTIL_QOL, "/logo-480.png"), SkyWarsToolsMod.MODID + ".json");
@@ -122,5 +149,10 @@ public class SWTConfig extends Config {
         addDependency("autododgeSoundEnabled", "autododgeEnabled");
         addDependency("autododgeLobby", "autododgeEnabled");
         addDependency("autododgeMaps", "autododgeEnabled");
+        addDependency("experienceShowTemp", "experienceMasterSwitch");
+        addDependency("lastGameEXPHud", "experienceMasterSwitch");
+
+        addDependency("islandFinderAutoWho", "islandFinderEnabled");
+        addDependency("islandFinderBeacon", "islandFinderEnabled");
     }
 }

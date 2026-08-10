@@ -38,11 +38,11 @@ public class NickDetector {
     public static boolean isLikelyNicked(NetworkPlayerInfo networkPlayerInfo) {
         UUID uuid = networkPlayerInfo.getGameProfile().getId();
         if (uuid == null) return true;
-        net.minecraft.util.ResourceLocation skin = networkPlayerInfo.getLocationSkin();
-        System.out.println(skin.toString());
-        if (mythicalKits.contains(skin.toString())) {
-            return false;
-        }
         return uuid.version() != 4;
+    }
+
+    public static boolean isMythical(NetworkPlayerInfo networkPlayerInfo){
+        net.minecraft.util.ResourceLocation skin = networkPlayerInfo.getLocationSkin();
+        return mythicalKits.contains(skin.toString());
     }
 }

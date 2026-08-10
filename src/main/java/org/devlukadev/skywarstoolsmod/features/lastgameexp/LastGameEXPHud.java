@@ -1,12 +1,11 @@
-package org.devlukadev.skywarstoolsmod.hud;
+package org.devlukadev.skywarstoolsmod.features.lastgameexp;
 
 import cc.polyfrost.oneconfig.hud.SingleTextHud;
-import org.devlukadev.skywarstoolsmod.events.LastGameEXPEvents;
 
 public class LastGameEXPHud extends SingleTextHud {
 
     public LastGameEXPHud() {
-        super("§6EXP Last Game", true);
+        super("&6EXP Last Game", true);
     }
 
     public void setVisibility(boolean visible){

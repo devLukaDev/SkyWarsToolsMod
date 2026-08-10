@@ -4,18 +4,24 @@ import cc.polyfrost.oneconfig.events.EventManager;
 import cc.polyfrost.oneconfig.utils.hypixel.HypixelUtils;
 import net.hypixel.modapi.HypixelModAPI;
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.devlukadev.skywarstoolsmod.command.ExampleCommand;
-import org.devlukadev.skywarstoolsmod.command.OpenAutododgeGUI;
+import org.devlukadev.skywarstoolsmod.features.autododge.OpenAutododgeGUI;
 import org.devlukadev.skywarstoolsmod.config.SWTConfig;
 import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import net.minecraftforge.fml.common.Mod;
 import cc.polyfrost.oneconfig.utils.commands.CommandManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import org.devlukadev.skywarstoolsmod.enhancedwho.EnhancedWho;
-import org.devlukadev.skywarstoolsmod.events.AutododgeEvents;
-import org.devlukadev.skywarstoolsmod.events.LastGameEXPEvents;
+import org.devlukadev.skywarstoolsmod.features.enhancedwho.EnhancedWho;
+import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeEvents;
+import org.devlukadev.skywarstoolsmod.features.kitselectorfix.KitSelectorFixEvent;
+import org.devlukadev.skywarstoolsmod.features.lastgameexp.LastGameEXPEvents;
+import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerHUD;
+import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerInventory;
 import org.devlukadev.skywarstoolsmod.updater.SWTUpdater;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
@@ -69,7 +75,7 @@ public class SkyWarsToolsMod {
         LastGameEXPEvents lastGameEXPEvents = new LastGameEXPEvents();
 
         MinecraftForge.EVENT_BUS.register(lastGameEXPEvents);
-        EventManager.INSTANCE.register(lastGameEXPEvents);
+        LocationUtil.addListener(lastGameEXPEvents::onLocationReceived);
 
         // Autododge
         AutododgeEvents autododge = new AutododgeEvents();
@@ -82,11 +88,25 @@ public class SkyWarsToolsMod {
         // Enhanced Who
         MinecraftForge.EVENT_BUS.register(new EnhancedWho());
 
-        // TabLevels
-//        TabLevels tabLevels = new TabLevels();
-//        LocationUtil.addListener(tabLevels::onGameJoin);
-//        MinecraftForge.EVENT_BUS.register(tabLevels);
+        // Kit Select Fix
+        MinecraftForge.EVENT_BUS.register(new KitSelectorFixEvent());
 
+        // Item Cooldown hud
+        EventManager.INSTANCE.register(new UsageTimerHUD());
 
+        MinecraftForge.EVENT_BUS.register(this); // For event below
+
+    }
+
+    @SubscribeEvent
+    public void onDrawDebugText(RenderGameOverlayEvent.Text event) {
+        if (Minecraft.getMinecraft().gameSettings.showDebugInfo) {
+            event.left.add("");
+            event.left.add("SkyWarsTools");
+            event.left.add("hasCorruptedPearl: " + String.valueOf(UsageTimerInventory.hasCorruptedPearl));
+            event.left.add("hasEchoClock: " + String.valueOf(UsageTimerInventory.hasEchoClock));
+            event.left.add("hasEndlordPearl: " + String.valueOf(UsageTimerInventory.hasEndlordPearl));
+
+        }
     }
 }

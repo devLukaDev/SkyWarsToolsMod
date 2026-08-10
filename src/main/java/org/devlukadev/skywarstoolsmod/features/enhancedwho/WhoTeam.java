@@ -1,4 +1,4 @@
-package org.devlukadev.skywarstoolsmod.enhancedwho;
+package org.devlukadev.skywarstoolsmod.features.enhancedwho;
 
 import java.util.List;
 

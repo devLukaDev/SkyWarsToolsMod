@@ -1,4 +1,4 @@
-package org.devlukadev.skywarstoolsmod.hud;
+package org.devlukadev.skywarstoolsmod.features.autododge;
 
 import cc.polyfrost.oneconfig.config.core.OneColor;
 import cc.polyfrost.oneconfig.renderer.NanoVGHelper;
@@ -7,7 +7,6 @@ import cc.polyfrost.oneconfig.utils.InputHandler;
 import cc.polyfrost.oneconfig.utils.gui.GuiUtils;
 import cc.polyfrost.oneconfig.utils.gui.OneUIScreen;
 import net.minecraft.client.Minecraft;
-import org.devlukadev.skywarstoolsmod.autododge.AutododgeStorage;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 
 import java.util.ArrayList;

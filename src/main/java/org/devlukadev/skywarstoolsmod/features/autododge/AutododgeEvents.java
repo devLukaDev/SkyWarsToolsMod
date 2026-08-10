@@ -1,4 +1,4 @@
-package org.devlukadev.skywarstoolsmod.events;
+package org.devlukadev.skywarstoolsmod.features.autododge;
 
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import net.minecraft.client.Minecraft;
@@ -12,7 +12,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
-import org.devlukadev.skywarstoolsmod.autododge.AutododgeStorage;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package org.devlukadev.skywarstoolsmod.autododge;
+package org.devlukadev.skywarstoolsmod.features.autododge;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

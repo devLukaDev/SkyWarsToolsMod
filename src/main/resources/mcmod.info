@@ -2,7 +2,7 @@
   {
     "modid": "${id}",
     "name": "${name}",
-    "description": "",
+    "description": "Various tools and gameplay optimizations for Hypixel SkyWars",
     "version": "${version}",
     "mcversion": "${mcVersionStr}",
     "url": "",
@@ -10,8 +10,8 @@
     "authorList": [
       "DevLukaDev"
     ],
-    "credits": "",
-    "logoFile": "",
+    "credits": "Polyfrost, Alexdoru, Yedelo",
+    "logoFile": "logo.png",
     "screenshots": [],
     "dependencies": []
   }

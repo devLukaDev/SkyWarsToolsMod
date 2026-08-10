@@ -1,4 +1,4 @@
-package org.devlukadev.skywarstoolsmod.enhancedwho;
+package org.devlukadev.skywarstoolsmod.features.enhancedwho;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -91,7 +91,6 @@ public class EnhancedWho {
 
         ClientScheduler.schedule(CAPTURE_WINDOW_TICKS, () -> {
             isCapturingRoster = false;
-            ChatLib.chat("Roster captured: " + teamRoster.size() + " teams", false);
         });
     }
 
@@ -120,7 +119,7 @@ public class EnhancedWho {
     // Always cancel — the player shouldn't see our auto-triggered /who spam.
     private void handleRosterCaptureLine(WhoTeam parsedTeam, ClientChatReceivedEvent event) {
         teamRoster.put(parsedTeam.getTeamNumber(), parsedTeam);
-        event.setCanceled(true);
+        if (!SkyWarsToolsMod.config.islandFinderAutoWho) event.setCanceled(true);
     }
 
     // Outside the capture window: this is a /who the player triggered themselves later
@@ -188,6 +187,7 @@ public class EnhancedWho {
     public void onRenderLast(RenderWorldLastEvent event) {
         if (!shouldRenderBeacon) return;
         if (!SkyWarsToolsMod.config.islandFinderEnabled) return;
+        if (!SkyWarsToolsMod.config.islandFinderBeacon) return;
         if (playerStartPosition == null) return;
 
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
