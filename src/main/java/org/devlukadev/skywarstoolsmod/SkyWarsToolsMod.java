@@ -20,8 +20,10 @@ import org.devlukadev.skywarstoolsmod.features.enhancedwho.EnhancedWho;
 import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeEvents;
 import org.devlukadev.skywarstoolsmod.features.kitselectorfix.KitSelectorFixEvent;
 import org.devlukadev.skywarstoolsmod.features.lastgameexp.LastGameEXPEvents;
+import org.devlukadev.skywarstoolsmod.features.usagetimer.TimeWarpPearlTracker;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerHUD;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerInventory;
+import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerManager;
 import org.devlukadev.skywarstoolsmod.updater.SWTUpdater;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
@@ -93,6 +95,8 @@ public class SkyWarsToolsMod {
 
         // Item Cooldown hud
         EventManager.INSTANCE.register(new UsageTimerHUD());
+        MinecraftForge.EVENT_BUS.register(new UsageTimerManager());
+        MinecraftForge.EVENT_BUS.register(new TimeWarpPearlTracker());
 
         MinecraftForge.EVENT_BUS.register(this); // For event below
 

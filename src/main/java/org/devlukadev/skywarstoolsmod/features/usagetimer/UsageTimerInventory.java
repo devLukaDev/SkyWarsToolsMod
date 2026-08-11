@@ -1,7 +1,13 @@
 package org.devlukadev.skywarstoolsmod.features.usagetimer;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
+import org.devlukadev.skywarstoolsmod.utils.ChatLib;
+import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +20,7 @@ public class UsageTimerInventory {
     public static boolean hasCorruptedPearl = false;
     public static boolean hasEchoClock = false;
     public static boolean hasEndlordPearl = false;
+    public static boolean hasCryoBridgeEgg = false;
 
     private static final ItemStack[] hotbarCache = new ItemStack[9];
 
@@ -24,6 +31,7 @@ public class UsageTimerInventory {
         TRACKED_ATTRIBUTES.put("corrupted_pearl", v -> hasCorruptedPearl = v);
         TRACKED_ATTRIBUTES.put("echo_clock", v -> hasEchoClock = v);
         TRACKED_ATTRIBUTES.put("endlord_pearl", v -> hasEndlordPearl = v);
+        TRACKED_ATTRIBUTES.put("cyro_bridge_egg", v -> hasCryoBridgeEgg = v);
     }
 
     public static void onHotbarSlotChanged(int slot, ItemStack stack) {
@@ -51,7 +59,7 @@ public class UsageTimerInventory {
     /**
      * Returns the first tracked ExtraAttributes key present on this stack with a truthy byte value, or null.
      */
-    private static String getExtraAttributeKey(ItemStack stack) {
+    public static String getExtraAttributeKey(ItemStack stack) {
         if (stack == null || !stack.hasTagCompound()) return null;
         NBTTagCompound tag = stack.getTagCompound();
         if (tag == null || !tag.hasKey("ExtraAttributes")) return null;

@@ -89,7 +89,13 @@ public class KitSelectorFixEvent {
         Slot slot = gui.getSlotUnderMouse();
 
         if (slot != null && slot.getHasStack()) {
+
             lastClickedStack = slot.getStack().copy();
+            Pattern pattern = Pattern.compile("^§a(.+?)§6 ✯$");
+            Matcher kitNameMatcher = pattern.matcher(lastClickedStack.getDisplayName());
+            if (!kitNameMatcher.find()) {
+                return;
+            }
             lastSlotClicked = slot.slotNumber;
             waitingForConfirmation = true;
             clickTick = totalTicks;

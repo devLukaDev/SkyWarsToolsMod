@@ -131,6 +131,23 @@ public class SWTConfig extends Config {
     )
     public boolean cooldownsHUDEnabled = true;
 
+    @Slider(
+            name = "Icon size",
+            category = "CooldownsHUD",
+            min = 1,
+            max = 200
+    )
+    public int cooldownsHUDSize = 50;
+
+    @Slider(
+            name = "Distance from crosshair",
+            category = "CooldownsHUD",
+            min = 1,
+            max = 200
+    )
+    public int cooldownsHUDDistance = 50;
+
+
     // ==== Fixes ====
     @Switch(
             name = "Kit Select Fix",
