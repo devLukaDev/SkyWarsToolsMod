@@ -7,6 +7,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
+import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class UsageTimerManager {
 
     @SubscribeEvent
     public void onGameStart(ClientChatReceivedEvent event) {
-        //        if (!LocationUtil.isInSkyWars()) return;
+        if (!LocationUtil.isInSkyWars()) return;
         if (!SkyWarsToolsMod.config.cooldownsHUDEnabled) return;
 
         String message = event.message.getFormattedText();
@@ -96,7 +97,7 @@ public class UsageTimerManager {
 
     @SubscribeEvent
     public void onInteract(PlayerInteractEvent event) {
-//        if (!LocationUtil.isInSkyWars()) return;
+        if (!LocationUtil.isInSkyWars()) return;
         if (!SkyWarsToolsMod.config.cooldownsHUDEnabled) return;
         if (event.entityPlayer != Minecraft.getMinecraft().thePlayer) return;
         if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_AIR

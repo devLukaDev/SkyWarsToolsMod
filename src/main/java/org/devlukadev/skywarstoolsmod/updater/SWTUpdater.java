@@ -70,11 +70,12 @@ public final class SWTUpdater extends ModUpdater {
                 }
                 ChatLib.chat("&6&m--------------------------------------------------------", false);
 
-            } else {
-
-                ChatLib.chat("&aYou are using the latest version of SkyWarsToolsMod! (&f" + current + "&a)");
             }
 
+        } else {
+            if (current.equals(latest)){
+                ChatLib.chat("&aYou are using the latest version of SkyWarsToolsMod! (&f" + current + "&a)");
+            }
         }
     }
 

@@ -155,6 +155,12 @@ public class SWTConfig extends Config {
             category = "Fixes"
     )
     public boolean kitSelectFix = true;
+    @Switch(
+            name = "Prevent Taking Lapis from Etable",
+            description = "Makes sure you cannot accidentally take lapis from the etable",
+            category = "Fixes"
+    )
+    public boolean etableFix = true;
 
 
 

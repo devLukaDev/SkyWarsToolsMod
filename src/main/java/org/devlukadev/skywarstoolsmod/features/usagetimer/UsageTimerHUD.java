@@ -6,6 +6,7 @@ import cc.polyfrost.oneconfig.renderer.NanoVGHelper;
 import cc.polyfrost.oneconfig.renderer.asset.Image;
 import cc.polyfrost.oneconfig.renderer.font.Fonts;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
+import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.lwjgl.opengl.Display;
 
 public class UsageTimerHUD {
@@ -18,7 +19,7 @@ public class UsageTimerHUD {
 
     @Subscribe
     private void onHudRender(HudRenderEvent event) {
-//        if (!LocationUtil.isInSkyWars()) return;
+        if (!LocationUtil.isInSkyWars()) return;
         if (!SkyWarsToolsMod.config.cooldownsHUDEnabled) return;
 
         int centerX = Display.getWidth() / 2;

@@ -113,6 +113,7 @@ public abstract class ModUpdater {
             return null;
         }
         final boolean isUpToDate = new ComparableVersion(this.currentV).compareTo(artifactInfo.version) >= 0;
+        latestVersion = artifactInfo.version;
         if (isUpToDate) {
             LOGGER.info("The mod is up to date!");
             return null;

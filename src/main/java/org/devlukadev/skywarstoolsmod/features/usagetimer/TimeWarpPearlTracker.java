@@ -18,7 +18,7 @@ public class TimeWarpPearlTracker {
 
     @SubscribeEvent
     public void onEntityJoin(EntityJoinWorldEvent event) {
-//        if (!LocationUtil.isInSkyWars()) return;
+        if (!LocationUtil.isInSkyWars()) return;
         if (!(event.entity instanceof EntityEnderPearl)) return;
         EntityEnderPearl pearl = (EntityEnderPearl) event.entity;
 
@@ -32,7 +32,7 @@ public class TimeWarpPearlTracker {
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
-//        if (!LocationUtil.isInSkyWars()) return;
+        if (!LocationUtil.isInSkyWars()) return;
         if (event.phase != TickEvent.Phase.END) return;
         if (trackedPearl == null) return;
 
