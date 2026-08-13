@@ -2,14 +2,20 @@ package org.devlukadev.skywarstoolsmod.config;
 
 import cc.polyfrost.oneconfig.config.Config;
 import cc.polyfrost.oneconfig.config.annotations.*;
+import cc.polyfrost.oneconfig.config.core.ConfigUtils;
 import cc.polyfrost.oneconfig.config.data.InfoType;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 
+import cc.polyfrost.oneconfig.config.elements.BasicOption;
+import cc.polyfrost.oneconfig.config.elements.OptionPage;
 import cc.polyfrost.oneconfig.utils.gui.GuiUtils;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeScreen;
 import org.devlukadev.skywarstoolsmod.features.lastgameexp.LastGameEXPHud;
+import org.devlukadev.skywarstoolsmod.features.tablevels.TabPreviewOption;
+
+import java.lang.reflect.Field;
 
 /**
  * The main Config entrypoint that extends the Config type and inits the config options.
@@ -100,6 +106,8 @@ public class SWTConfig extends Config {
             category = "SkyWars Levels"
     )
     public boolean levelsEnabled = true;
+    @CustomOption(id = "tabPreviewOption")
+    public static boolean yes = true;
 
     // ==== Enhanced Who ====
 
@@ -150,7 +158,7 @@ public class SWTConfig extends Config {
 
     // ==== Fixes ====
     @Switch(
-            name = "Kit Select Fix",
+            name = "Kit Select Fix (BROKEN: WIP)",
             description = "Attempts to fix kit selecting",
             category = "Fixes"
     )
@@ -161,7 +169,6 @@ public class SWTConfig extends Config {
             category = "Fixes"
     )
     public boolean etableFix = true;
-
 
 
     public SWTConfig() {
@@ -177,5 +184,24 @@ public class SWTConfig extends Config {
 
         addDependency("islandFinderAutoWho", "islandFinderEnabled");
         addDependency("islandFinderBeacon", "islandFinderEnabled");
+    }
+
+    @Override
+    protected BasicOption getCustomOption(Field field, CustomOption annotation, OptionPage page, Mod mod, boolean migrate) {
+        BasicOption option = null;
+        switch (annotation.id()) {
+            case "tabPreviewOption":
+                option = new TabPreviewOption(
+                        field,
+                        null,               // parent — null since there's no bound variable, like the category example
+                        "Tablist preview",  // name
+                        "Preview a name in tab", // description
+                        "SkyWars Levels",         // category
+                        "", 1                   // size: 0 = single column, 1 = double
+                );
+                ConfigUtils.getSubCategory(page, option.category, option.subcategory).options.add(option);
+                break;
+        }
+        return option;
     }
 }

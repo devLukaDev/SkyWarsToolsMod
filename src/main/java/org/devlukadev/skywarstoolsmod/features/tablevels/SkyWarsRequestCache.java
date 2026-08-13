@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 public class SkyWarsRequestCache {
 
@@ -23,11 +22,11 @@ public class SkyWarsRequestCache {
         return uuidCache.size() + nameCache.size();
     }
 
-    public static String getPrefix(UUID uuid) {
+    public static SkyWarsResponse getStats(UUID uuid) {
         if (uuid == null) {
-            return "";
+            return null;
         }
-        return getPrefix(
+        return getStats(
                 uuid,
                 uuidCache,
                 uuidPending,
@@ -36,11 +35,11 @@ public class SkyWarsRequestCache {
         );
     }
 
-    public static String getPrefix(String playerName) {
+    public static SkyWarsResponse getStats(String playerName) {
         if (playerName == null || playerName.isEmpty()) {
-            return "";
+            return null;
         }
-        return getPrefix(
+        return getStats(
                 playerName,
                 nameCache,
                 namePending,
@@ -49,11 +48,11 @@ public class SkyWarsRequestCache {
         );
     }
 
-    private static <K> String getPrefix(K key,
-                                        Map<K, SkyWarsResponse> cache,
-                                        Set<K> pending,
-                                        Map<K, Long> lastFetch,
-                                        String url) {
+    private static <K> SkyWarsResponse getStats(K key,
+                                       Map<K, SkyWarsResponse> cache,
+                                       Set<K> pending,
+                                       Map<K, Long> lastFetch,
+                                       String url) {
         SkyWarsResponse cached = cache.get(key);
         boolean stale = (cached == null);
 
@@ -73,12 +72,6 @@ public class SkyWarsRequestCache {
                     });
         }
 
-        if (cached == null) {
-            return "§c[?] ";
-        }
-        if (cached.display == null || cached.display.levelFormattedWithBrackets == null) {
-            return "§7[1✯] ";
-        }
-        return cached.display.levelFormattedWithBrackets;
+        return cached;
     }
 }

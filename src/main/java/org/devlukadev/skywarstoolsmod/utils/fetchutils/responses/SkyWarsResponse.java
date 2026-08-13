@@ -5,7 +5,7 @@ public class SkyWarsResponse {
     public String player;
     public Display display;
     public long queried;
-    public double exp;
+    public Stats stats;
 
     public static class Display {
         public String levelFormattedWithBrackets;
@@ -24,19 +24,34 @@ public class SkyWarsResponse {
             d.levelFormattedWithBrackets = "§c[?]";
             return d;
         }
+
+    }
+    public static class Stats {
+        public int wins;
+        public int losses;
+        public int kills;
+        public int deaths;
+        public int skywars_experience;
+
+        public Stats(){}
+
+        public static Stats anonymous(){
+            Stats s = new Stats();
+            return s;
+        }
     }
 
     public static SkyWarsResponse getNickMock(String name){
-        return new SkyWarsResponse(1, name, Display.anonymous(), 1, -1);
+        return new SkyWarsResponse(1, name, Display.anonymous(), Stats.anonymous(), -1);
     }
 
-    public SkyWarsResponse(long took, String player, Display display, long queried, double exp) {
+    public SkyWarsResponse(long took, String player, Display display, Stats stats, long queried) {
         this.took = took;
         this.player = player;
         this.display = display;
+        this.stats = stats;
         this.queried = queried;
-        this.exp = exp;
+
+
     }
-
-
 }

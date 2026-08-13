@@ -39,9 +39,9 @@ public class AutododgeEvents {
 
         // We are in a map that needs to be dodged!
         ChatLib.chat("&aMap &e" + map + "&a is on dodge list! Dodging in &e5&a seconds...", true);
-        ChatLib.chat("&cSNEAK TO CANCEL DODGING!", true);
+        ChatLib.chat("&cHOLD SNEAK TO CANCEL DODGING!", true);
 
-        ChatLib.showTitle("§cDodging", "SNEAK TO CANCEL", 10, 100, 10);
+        ChatLib.showTitle("§cDodging", "HOLD SNEAK TO CANCEL", 10, 100, 10);
         dodgingEngaged = true;
         dodgeTicksLeft = 100; // 5 seconds * 20 ticks
     }
@@ -67,6 +67,7 @@ public class AutododgeEvents {
             dodgeTicksLeft--;
             if (dodgeTicksLeft % 20 == 0)
                 Minecraft.getMinecraft().thePlayer.playSound("random.orb", 1.0F, (-0.005F * dodgeTicksLeft) + 1);
+            // NPE when logging out in the middle of this? idk if Tick fires in menu, if so then player is null?
 
         } else if (dodgeTicksLeft == 0) {
             dodgeTicksLeft = -1;
@@ -77,7 +78,9 @@ public class AutododgeEvents {
         // Cancel on sneaking
         if (dodgingEngaged
                 && Minecraft.getMinecraft().thePlayer != null
-                && Minecraft.getMinecraft().thePlayer.isSneaking()) {
+                && Minecraft.getMinecraft().thePlayer.isSneaking()
+                && dodgeTicksLeft <= 90) {
+            System.out.println("Cancelled here");
             cancelDodge();
             ChatLib.chat("&cDodging cancelled!", true);
 
