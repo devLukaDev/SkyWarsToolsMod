@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.features.tablevels.SkyWarsRequestCache;
+import org.devlukadev.skywarstoolsmod.features.tablevels.TabStringConstructor;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.NickDetector;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.responses.SkyWarsResponse;
@@ -14,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.UUID;
 
-
 @Mixin(GuiPlayerTabOverlay.class)
 public class TabLevelsMixin {
 
@@ -24,35 +24,21 @@ public class TabLevelsMixin {
         if (!SkyWarsToolsMod.config.levelsEnabled) return;
         if (!LocationUtil.getCurrentLocation().getMap().isPresent()) return; // In a lobby
 
-        UUID uuid = networkPlayerInfoIn.getGameProfile().getId();
+        String originalName = cir.getReturnValue();
+
         if (NickDetector.isLikelyNicked(networkPlayerInfoIn)) {
-
-            boolean mythical = NickDetector.isMythical(networkPlayerInfoIn);
-            if (mythical) {
-                // player could be nicked still, but we cannot know, still fetch
+            if (NickDetector.isMythical(networkPlayerInfoIn)) {
+                // Could still be nicked, but we can't know for sure - fetch anyway
                 SkyWarsResponse cached = SkyWarsRequestCache.getStats(networkPlayerInfoIn.getGameProfile().getName());
-                String value = "";
-                if (cached == null) {
-                    value = "§c[?] ";
-                } else if (cached.display == null || cached.display.levelFormattedWithBrackets == null) {
-                    value = "§7[1✯] ";
-                } else {
-                    value = cached.display.levelFormattedWithBrackets;
-                }
-
-                cir.setReturnValue(value + cir.getReturnValue());
+                cir.setReturnValue(TabStringConstructor.build(cached, originalName, false));
             } else {
-                cir.setReturnValue("§c[?] " + cir.getReturnValue());
+                cir.setReturnValue(TabStringConstructor.build(null, originalName, true));
             }
             return;
         }
+
+        UUID uuid = networkPlayerInfoIn.getGameProfile().getId();
         SkyWarsResponse cached = SkyWarsRequestCache.getStats(uuid);
-        String value = "";
-        if (cached == null || cached.display == null | cached.display.levelFormattedWithBrackets == null){
-            value = "§c[?] ";
-        } else {
-            value = cached.display.levelFormattedWithBrackets;
-        }
-        cir.setReturnValue(value + cir.getReturnValue());
+        cir.setReturnValue(TabStringConstructor.build(cached, originalName, false));
     }
 }

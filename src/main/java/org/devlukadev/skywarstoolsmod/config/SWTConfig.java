@@ -3,6 +3,7 @@ package org.devlukadev.skywarstoolsmod.config;
 import cc.polyfrost.oneconfig.config.Config;
 import cc.polyfrost.oneconfig.config.annotations.*;
 import cc.polyfrost.oneconfig.config.core.ConfigUtils;
+import cc.polyfrost.oneconfig.config.core.OneColor;
 import cc.polyfrost.oneconfig.config.data.InfoType;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
@@ -14,8 +15,10 @@ import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeScreen;
 import org.devlukadev.skywarstoolsmod.features.lastgameexp.LastGameEXPHud;
 import org.devlukadev.skywarstoolsmod.features.tablevels.TabPreviewOption;
+import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 /**
  * The main Config entrypoint that extends the Config type and inits the config options.
@@ -103,11 +106,30 @@ public class SWTConfig extends Config {
     @Switch(
             name = "Enable SkyWars Levels",
             description = "Enable automatic SkyWars levels to be shown when joining a game",
-            category = "SkyWars Levels"
+            category = "SkyWars Levels",
+            size = 2
     )
     public boolean levelsEnabled = true;
+
+
+    @Info(
+            category = "SkyWars Levels",
+            size = 2,
+            text = "You can use \"%default%\", \"%level%\", \"%wl%\", \"%kd%\", \"%kills%\", \"%wins%\", \"%deaths%\", " +
+                    "\"%losses%\", \"%exp%\", as well as & for colour codes.", type = InfoType.INFO)
+    public boolean bs = true;
+
+    @Text(
+            name = "Tab levels formatting",
+            secure = false, multiline = true,
+            category = "SkyWars Levels",
+            size = 2
+    )
+    public String tabLevelText = "%level% %default%";
+
     @CustomOption(id = "tabPreviewOption")
-    public static boolean yes = true;
+    public boolean yes = true;
+
 
     // ==== Enhanced Who ====
 
@@ -197,7 +219,7 @@ public class SWTConfig extends Config {
                         "Tablist preview",  // name
                         "Preview a name in tab", // description
                         "SkyWars Levels",         // category
-                        "", 1                   // size: 0 = single column, 1 = double
+                        "", 0                // size: 0 = single column, 1 = double
                 );
                 ConfigUtils.getSubCategory(page, option.category, option.subcategory).options.add(option);
                 break;
