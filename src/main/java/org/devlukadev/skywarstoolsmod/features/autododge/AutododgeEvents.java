@@ -35,7 +35,13 @@ public class AutododgeEvents {
             ChatLib.chat("&cYour Autododge config has no maps. Is it malformed?", true);
             return;
         }
-        if (!Arrays.asList(dodgeMaps).contains(map)) return;
+
+        if (!SkyWarsToolsMod.config.autododgeInverted) {
+            if (!Arrays.asList(dodgeMaps).contains(map)) return;
+        } else {
+            if (Arrays.asList(dodgeMaps).contains(map)) return;
+        }
+
 
         // We are in a map that needs to be dodged!
         ChatLib.chat("&aMap &e" + map + "&a is on dodge list! Dodging in &e5&a seconds...", true);
@@ -50,7 +56,11 @@ public class AutododgeEvents {
     public void onWorldLoad(WorldEvent.Load event) {
         // If you go into another world while dodging was engaged, cancel it
         if (!SkyWarsToolsMod.config.autododgeEnabled) return;
-
+        // TODO do we need this? might be fucking things up -- Yup, this says true a couple times while actually dodging
+        //  Solution: debounce this and only listen to the first one? or just delay, only listen to last one
+        //  its some weird race condition - needs testing to see what best way to deal with
+        
+        System.out.println(dodgingEngaged);
         if (dodgingEngaged) {
             cancelDodge();
         }
@@ -134,6 +144,7 @@ public class AutododgeEvents {
     }
 
     private static void performDodge() {
+        dodgingEngaged = false;
         Minecraft.getMinecraft().thePlayer.sendChatMessage("/requeue");
     }
 }

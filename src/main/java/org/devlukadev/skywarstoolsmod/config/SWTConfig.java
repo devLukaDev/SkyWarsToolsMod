@@ -101,6 +101,13 @@ public class SWTConfig extends Config {
     )
     public boolean autododgeLobby = true;
 
+    @Switch(
+            name = "Invert List",
+            description = "Instead of dodging the maps on your list, dodge all maps except those!",
+            category = "Autododge"
+    )
+    public boolean autododgeInverted = false;
+
     // ==== SkyWars Levels ====
 
     @Switch(
