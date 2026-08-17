@@ -95,6 +95,8 @@ repositories {
 
 // Configures the libraries/dependencies for your mod.
 dependencies {
+    testImplementation("junit:junit:4.12")
+
     // Adds the OneConfig library, so we can develop with it.
     modCompileOnly("cc.polyfrost:oneconfig-$platform:0.2.2-alpha+")
 

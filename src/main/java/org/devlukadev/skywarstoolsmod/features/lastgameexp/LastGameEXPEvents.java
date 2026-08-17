@@ -1,13 +1,10 @@
 package org.devlukadev.skywarstoolsmod.features.lastgameexp;
 
-import cc.polyfrost.oneconfig.utils.hypixel.HypixelUtils;
-import cc.polyfrost.oneconfig.utils.hypixel.LocrawInfo;
 
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 
 import java.util.regex.Matcher;
@@ -47,7 +44,7 @@ public class LastGameEXPEvents {
             return;
         }
 
-        if (GAME_END.matcher(message).matches()) {
+        if (YOU_DIED_YOU_WON.matcher(message).matches()) {
             if (SkyWarsToolsMod.config.experienceShowTemp) {
                 SkyWarsToolsMod.config.lastGameEXPHud.setVisibility(true);
             }

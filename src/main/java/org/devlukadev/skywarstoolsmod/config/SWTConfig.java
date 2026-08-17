@@ -200,11 +200,19 @@ public class SWTConfig extends Config {
     )
     public boolean kitSelectFix = true;
     @Switch(
-            name = "Prevent Taking Lapis from Etable",
-            description = "Makes sure you cannot accidentally take lapis from the etable",
+            name = "Prevent Taking Lapis while Enchanting",
+            description = "Makes sure you cannot accidentally take lapis from the enchanting table",
             category = "Fixes"
     )
     public boolean etableFix = true;
+
+    // == Sessions ==
+    @Switch(
+            name = "Enable Session Tracker",
+            description = "HyStats-esque session tracker, makes estimated stats based on chat events",
+            category = "Sessions"
+    )
+    public boolean sessionsEnabled = true;
 
 
     public SWTConfig() {

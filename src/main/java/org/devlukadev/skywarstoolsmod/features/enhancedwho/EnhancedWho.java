@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.devlukadev.skywarstoolsmod.utils.MessagePattern.GAME_END;
+import static org.devlukadev.skywarstoolsmod.utils.MessagePattern.YOU_DIED_YOU_WON;
 import static org.devlukadev.skywarstoolsmod.utils.MessagePattern.GAME_START;
 
 public class EnhancedWho {
@@ -49,7 +49,7 @@ public class EnhancedWho {
 
         String message = event.message.getFormattedText();
 
-        if (GAME_END.matcher(message).matches()) {
+        if (YOU_DIED_YOU_WON.matcher(message).matches()) {
             playerDied = true;
             return;
         }

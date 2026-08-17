@@ -20,6 +20,7 @@ import org.devlukadev.skywarstoolsmod.features.enhancedwho.EnhancedWho;
 import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeEvents;
 import org.devlukadev.skywarstoolsmod.features.kitselectorfix.KitSelectorFixEvent;
 import org.devlukadev.skywarstoolsmod.features.lastgameexp.LastGameEXPEvents;
+import org.devlukadev.skywarstoolsmod.features.sessions.SessionTracker;
 import org.devlukadev.skywarstoolsmod.features.tablevels.SkyWarsRequestCache;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.TimeWarpPearlTracker;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerHUD;
@@ -47,7 +48,6 @@ public class SkyWarsToolsMod {
     @Mod.Instance(MODID)
     public static SkyWarsToolsMod INSTANCE; // Adds the instance of the mod, so we can access other variables.
     public static SWTConfig config;
-
 
     private File cacheFolder;
 
@@ -98,6 +98,10 @@ public class SkyWarsToolsMod {
         EventManager.INSTANCE.register(new UsageTimerHUD());
         MinecraftForge.EVENT_BUS.register(new UsageTimerManager());
         MinecraftForge.EVENT_BUS.register(new TimeWarpPearlTracker());
+
+        //Sessions
+        SessionTracker sessionTracker = new SessionTracker();
+        LocationUtil.addListener(sessionTracker::onLocationReceived);
 
         MinecraftForge.EVENT_BUS.register(this); // For event below
 

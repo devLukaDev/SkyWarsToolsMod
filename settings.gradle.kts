@@ -29,3 +29,5 @@ listOf(
         buildFileName = "../../build.gradle.kts"
     }
 }
+
+include("src:test:java")
