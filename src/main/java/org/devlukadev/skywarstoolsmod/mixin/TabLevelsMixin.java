@@ -36,7 +36,7 @@ public class TabLevelsMixin {
     private void modifyPlayerName(NetworkPlayerInfo networkPlayerInfoIn, CallbackInfoReturnable<String> cir) {
         if (!LocationUtil.isInSkyWars()) return;
         if (!SkyWarsToolsMod.config.levelsEnabled) return;
-        if (!LocationUtil.isInLobby()) return;
+        if (LocationUtil.isInLobby()) return;
 
         String originalName = cir.getReturnValue();
         SkyWarsResponse resp;

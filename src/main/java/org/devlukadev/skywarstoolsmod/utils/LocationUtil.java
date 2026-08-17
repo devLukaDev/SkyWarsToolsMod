@@ -42,8 +42,8 @@ public class LocationUtil {
     }
 
     public static boolean isInLobby(){
-        if (currentLocation == null) return false;
-        if (!currentLocation.getServerType().isPresent()) return false;
+        if (currentLocation == null) return true;
+        if (!currentLocation.getServerType().isPresent()) return true;
         return !(getCurrentLocation().getMap().isPresent());
     }
 }
