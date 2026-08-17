@@ -1,11 +1,11 @@
 package org.devlukadev.skywarstoolsmod.mixin;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.features.tablevels.SkyWarsRequestCache;
 import org.devlukadev.skywarstoolsmod.features.tablevels.TabColumnWidths;
+import org.devlukadev.skywarstoolsmod.features.tablevels.TabRowRenderContext;
 import org.devlukadev.skywarstoolsmod.features.tablevels.TabStringConstructor;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.NickDetector;
@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.UUID;
+import java.util.List;
 
 @Mixin(GuiPlayerTabOverlay.class)
 public class TabLevelsMixin {
@@ -24,25 +24,33 @@ public class TabLevelsMixin {
     private void modifyPlayerName(NetworkPlayerInfo networkPlayerInfoIn, CallbackInfoReturnable<String> cir) {
         if (!LocationUtil.isInSkyWars()) return;
         if (!SkyWarsToolsMod.config.levelsEnabled) return;
-        if (!LocationUtil.getCurrentLocation().getMap().isPresent()) return; // In a lobby
+        if (!LocationUtil.getCurrentLocation().getMap().isPresent()) return;
 
         String originalName = cir.getReturnValue();
-        net.minecraft.client.gui.FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
-        int[] colWidths = TabColumnWidths.get();
+        SkyWarsResponse resp;
+        boolean nicked;
 
         if (NickDetector.isLikelyNicked(networkPlayerInfoIn)) {
             if (NickDetector.isMythical(networkPlayerInfoIn)) {
-                // Could still be nicked, but we can't know for sure - fetch anyway
-                SkyWarsResponse cached = SkyWarsRequestCache.getStats(networkPlayerInfoIn.getGameProfile().getName());
-                cir.setReturnValue(TabStringConstructor.buildAligned(cached, originalName, false, fr, colWidths));
+                resp = SkyWarsRequestCache.getStats(networkPlayerInfoIn.getGameProfile().getName());
+                nicked = false;
             } else {
-                cir.setReturnValue(TabStringConstructor.buildAligned(null, originalName, true, fr, colWidths));
+                resp = null;
+                nicked = true;
             }
-            return;
+        } else {
+            resp = SkyWarsRequestCache.getStats(networkPlayerInfoIn.getGameProfile().getId());
+            nicked = false;
         }
 
-        UUID uuid = networkPlayerInfoIn.getGameProfile().getId();
-        SkyWarsResponse cached = SkyWarsRequestCache.getStats(uuid);
-        cir.setReturnValue(TabStringConstructor.buildAligned(cached, originalName, false, fr, colWidths));
+        List<String> segments = TabStringConstructor.resolveSegments(resp, originalName, nicked);
+        String plain = String.join("", segments);
+
+        // stash for the upcoming drawStringWithShadow call
+        TabRowRenderContext.lastSegments = segments;
+        TabRowRenderContext.lastColWidths = TabColumnWidths.getWidths();
+        TabRowRenderContext.lastBuiltString = plain;
+
+        cir.setReturnValue(plain); // used for width-scan sizing + fallback
     }
 }

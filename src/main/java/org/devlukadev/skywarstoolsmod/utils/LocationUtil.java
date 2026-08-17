@@ -40,4 +40,10 @@ public class LocationUtil {
         if (!currentLocation.getServerType().isPresent()) return false;
         return currentLocation.getServerType().get().getName().equals("SkyWars");
     }
+
+    public static boolean isInLobby(){
+        if (currentLocation == null) return false;
+        if (!currentLocation.getServerType().isPresent()) return false;
+        return !(getCurrentLocation().getMap().isPresent());
+    }
 }

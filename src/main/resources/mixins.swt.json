@@ -10,7 +10,8 @@
     "TabLevelsMixin",
     "HotbarItemsMixin",
     "TakeItemFromGUIMixin",
-    "TabColumnRecomputeMixin"
+    "TabRowDrawMixin",
+    "RowDrawWidthCompute"
   ],
   "verbose": true
 }

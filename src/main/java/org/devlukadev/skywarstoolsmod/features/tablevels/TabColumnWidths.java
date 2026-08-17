@@ -2,17 +2,20 @@ package org.devlukadev.skywarstoolsmod.features.tablevels;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import org.apache.commons.lang3.ArrayUtils;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.utils.NickDetector;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.responses.SkyWarsResponse;
+import scala.actors.threadpool.Arrays;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class TabColumnWidths {
     private static int[] widths = new int[0];
 
-    public static int[] get() {
+    public static int[] getWidths() {
         return widths;
     }
 
@@ -23,7 +26,7 @@ public class TabColumnWidths {
         int[] max = null;
 
         for (NetworkPlayerInfo p : players) {
-            String originalName =p.getGameProfile().getName();
+            String originalName = p.getGameProfile().getName();
             SkyWarsResponse resp;
             boolean nicked;
 
@@ -49,7 +52,8 @@ public class TabColumnWidths {
         }
 
         if (max != null) {
-            for (int i = 0; i < max.length; i++) max[i] += SkyWarsToolsMod.config.levelsGutter; // small gutter between columns
+            for (int i = 0; i < max.length; i++)
+                max[i] += SkyWarsToolsMod.config.levelsGutter; // small gutter between columns
         }
         widths = max != null ? max : new int[0];
     }

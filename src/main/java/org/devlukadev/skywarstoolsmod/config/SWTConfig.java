@@ -115,19 +115,13 @@ public class SWTConfig extends Config {
     )
     public boolean levelsEnabled = true;
 
-    @Switch(
-            name = "Tab Alignment",
-            description = "Align the segments on tab for better readability",
-            category = "SkyWars Levels"
-    )
-    public boolean levelsAlignment = true;
-
     @Slider(
-            name = "Tab Alignment Gutter",
-            description = "The minimum space between stat segments",
+            name = "Gutter Minimum Space",
+            description = "How big the alignment whitespace should be",
             category = "SkyWars Levels",
             min = 0,
-            max = 10
+            max = 15,
+            step = 1
     )
     public int levelsGutter = 3;
 
@@ -225,9 +219,7 @@ public class SWTConfig extends Config {
         addDependency("experienceShowTemp", "experienceMasterSwitch");
         addDependency("lastGameEXPHud", "experienceMasterSwitch");
 
-        addDependency("levelsGutter", "levelsAlignment");
         addDependency("levelsGutter", "levelsEnabled");
-        addDependency("levelsAlignment", "levelsEnabled");
         addDependency("levelsText", "levelsEnabled");
 
         addDependency("islandFinderAutoWho", "islandFinderEnabled");
