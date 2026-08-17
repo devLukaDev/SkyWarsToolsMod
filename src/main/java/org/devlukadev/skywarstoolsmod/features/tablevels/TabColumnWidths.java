@@ -2,14 +2,11 @@ package org.devlukadev.skywarstoolsmod.features.tablevels;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.network.NetworkPlayerInfo;
-import org.apache.commons.lang3.ArrayUtils;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.utils.NickDetector;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.responses.SkyWarsResponse;
-import scala.actors.threadpool.Arrays;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class TabColumnWidths {
@@ -19,10 +16,7 @@ public class TabColumnWidths {
         return widths;
     }
 
-    public static void recompute(FontRenderer fr, Collection<NetworkPlayerInfo> players,
-                                 java.util.function.Function<NetworkPlayerInfo, SkyWarsResponse> statLookup,
-                                 java.util.function.Predicate<NetworkPlayerInfo> nickedCheck) {
-        List<String> templateShape = null;
+    public static void recompute(FontRenderer fr, Collection<NetworkPlayerInfo> players) {
         int[] max = null;
 
         for (NetworkPlayerInfo p : players) {

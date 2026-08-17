@@ -9,9 +9,7 @@
   "client": [
     "TabLevelsMixin",
     "HotbarItemsMixin",
-    "TakeItemFromGUIMixin",
-    "TabRowDrawMixin",
-    "RowDrawWidthCompute"
+    "TakeItemFromGUIMixin"
   ],
   "verbose": true
 }
