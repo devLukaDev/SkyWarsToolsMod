@@ -1,9 +1,11 @@
 package org.devlukadev.skywarstoolsmod.mixin;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.features.tablevels.SkyWarsRequestCache;
+import org.devlukadev.skywarstoolsmod.features.tablevels.TabColumnWidths;
 import org.devlukadev.skywarstoolsmod.features.tablevels.TabStringConstructor;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.NickDetector;
@@ -25,20 +27,22 @@ public class TabLevelsMixin {
         if (!LocationUtil.getCurrentLocation().getMap().isPresent()) return; // In a lobby
 
         String originalName = cir.getReturnValue();
+        net.minecraft.client.gui.FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
+        int[] colWidths = TabColumnWidths.get();
 
         if (NickDetector.isLikelyNicked(networkPlayerInfoIn)) {
             if (NickDetector.isMythical(networkPlayerInfoIn)) {
                 // Could still be nicked, but we can't know for sure - fetch anyway
                 SkyWarsResponse cached = SkyWarsRequestCache.getStats(networkPlayerInfoIn.getGameProfile().getName());
-                cir.setReturnValue(TabStringConstructor.build(cached, originalName, false));
+                cir.setReturnValue(TabStringConstructor.buildAligned(cached, originalName, false, fr, colWidths));
             } else {
-                cir.setReturnValue(TabStringConstructor.build(null, originalName, true));
+                cir.setReturnValue(TabStringConstructor.buildAligned(null, originalName, true, fr, colWidths));
             }
             return;
         }
 
         UUID uuid = networkPlayerInfoIn.getGameProfile().getId();
         SkyWarsResponse cached = SkyWarsRequestCache.getStats(uuid);
-        cir.setReturnValue(TabStringConstructor.build(cached, originalName, false));
+        cir.setReturnValue(TabStringConstructor.buildAligned(cached, originalName, false, fr, colWidths));
     }
 }

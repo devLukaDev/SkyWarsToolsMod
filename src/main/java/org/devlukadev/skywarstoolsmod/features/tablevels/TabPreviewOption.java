@@ -67,7 +67,7 @@ public class TabPreviewOption extends BasicOption {
                 ColorUtils.getColor(20, 20, 20, 100)
         );
 
-        String example = applyPlaceholders(SkyWarsToolsMod.config.tabLevelText);
+        String example = applyPlaceholders(SkyWarsToolsMod.config.levelsText);
         drawColoredCenteredText(vg, example, x + 480, y + 40);
     }
 

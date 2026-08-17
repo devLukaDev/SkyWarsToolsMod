@@ -3,7 +3,6 @@ package org.devlukadev.skywarstoolsmod.config;
 import cc.polyfrost.oneconfig.config.Config;
 import cc.polyfrost.oneconfig.config.annotations.*;
 import cc.polyfrost.oneconfig.config.core.ConfigUtils;
-import cc.polyfrost.oneconfig.config.core.OneColor;
 import cc.polyfrost.oneconfig.config.data.InfoType;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
@@ -15,10 +14,8 @@ import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeScreen;
 import org.devlukadev.skywarstoolsmod.features.lastgameexp.LastGameEXPHud;
 import org.devlukadev.skywarstoolsmod.features.tablevels.TabPreviewOption;
-import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 
 /**
  * The main Config entrypoint that extends the Config type and inits the config options.
@@ -118,6 +115,22 @@ public class SWTConfig extends Config {
     )
     public boolean levelsEnabled = true;
 
+    @Switch(
+            name = "Tab Alignment",
+            description = "Align the segments on tab for better readability",
+            category = "SkyWars Levels"
+    )
+    public boolean levelsAlignment = true;
+
+    @Slider(
+            name = "Tab Alignment Gutter",
+            description = "The minimum space between stat segments",
+            category = "SkyWars Levels",
+            min = 0,
+            max = 10
+    )
+    public int levelsGutter = 3;
+
 
     @Info(
             category = "SkyWars Levels",
@@ -128,11 +141,11 @@ public class SWTConfig extends Config {
 
     @Text(
             name = "Tab levels formatting",
-            secure = false, multiline = true,
+            secure = false,
             category = "SkyWars Levels",
             size = 2
     )
-    public String tabLevelText = "%level% %default%";
+    public String levelsText = "%level% %default%";
 
     @CustomOption(id = "tabPreviewOption")
     public boolean yes = true;
@@ -208,8 +221,14 @@ public class SWTConfig extends Config {
         addDependency("autododgeSoundEnabled", "autododgeEnabled");
         addDependency("autododgeLobby", "autododgeEnabled");
         addDependency("autododgeMaps", "autododgeEnabled");
+
         addDependency("experienceShowTemp", "experienceMasterSwitch");
         addDependency("lastGameEXPHud", "experienceMasterSwitch");
+
+        addDependency("levelsGutter", "levelsAlignment");
+        addDependency("levelsGutter", "levelsEnabled");
+        addDependency("levelsAlignment", "levelsEnabled");
+        addDependency("levelsText", "levelsEnabled");
 
         addDependency("islandFinderAutoWho", "islandFinderEnabled");
         addDependency("islandFinderBeacon", "islandFinderEnabled");

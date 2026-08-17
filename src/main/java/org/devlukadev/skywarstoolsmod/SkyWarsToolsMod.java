@@ -20,6 +20,7 @@ import org.devlukadev.skywarstoolsmod.features.enhancedwho.EnhancedWho;
 import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeEvents;
 import org.devlukadev.skywarstoolsmod.features.kitselectorfix.KitSelectorFixEvent;
 import org.devlukadev.skywarstoolsmod.features.lastgameexp.LastGameEXPEvents;
+import org.devlukadev.skywarstoolsmod.features.tablevels.SkyWarsRequestCache;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.TimeWarpPearlTracker;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerHUD;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerInventory;
@@ -106,10 +107,8 @@ public class SkyWarsToolsMod {
     public void onDrawDebugText(RenderGameOverlayEvent.Text event) {
         if (Minecraft.getMinecraft().gameSettings.showDebugInfo) {
             event.left.add("");
-            event.left.add("SkyWarsTools");
-            event.left.add("hasCorruptedPearl: " + String.valueOf(UsageTimerInventory.hasCorruptedPearl));
-            event.left.add("hasEchoClock: " + String.valueOf(UsageTimerInventory.hasEchoClock));
-            event.left.add("hasEndlordPearl: " + String.valueOf(UsageTimerInventory.hasEndlordPearl));
+            event.left.add("SkyWarsToolsMod @VER@");
+            event.left.add("TabListCache: " + SkyWarsRequestCache.getCacheSize());
 
         }
     }

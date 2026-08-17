@@ -25,9 +25,15 @@ public class AutododgeEvents {
 
     // Static because called elsewhere by hypixel mod api handler
     public void onLocationReceived(ClientboundLocationPacket packet) {
-
-        if (!packet.getMap().isPresent()) return; // In a lobby
         if (!SkyWarsToolsMod.config.autododgeEnabled) return;
+
+        // We have switched locations since a dodge, either into a new map or lobby
+        if (dodgingEngaged) {
+            dodgingEngaged = false;
+            dodgeTicksLeft = -1;
+        }
+
+        if (!packet.getMap().isPresent()) return; // In a lobby, we dont check for new dodge
 
         final String map = packet.getMap().get();
         final String[] dodgeMaps = AutododgeStorage.load().toArray(new String[0]);
@@ -50,20 +56,6 @@ public class AutododgeEvents {
         ChatLib.showTitle("§cDodging", "HOLD SNEAK TO CANCEL", 10, 100, 10);
         dodgingEngaged = true;
         dodgeTicksLeft = 100; // 5 seconds * 20 ticks
-    }
-
-    @SubscribeEvent
-    public void onWorldLoad(WorldEvent.Load event) {
-        // If you go into another world while dodging was engaged, cancel it
-        if (!SkyWarsToolsMod.config.autododgeEnabled) return;
-        // TODO do we need this? might be fucking things up -- Yup, this says true a couple times while actually dodging
-        //  Solution: debounce this and only listen to the first one? or just delay, only listen to last one
-        //  its some weird race condition - needs testing to see what best way to deal with
-        
-        System.out.println(dodgingEngaged);
-        if (dodgingEngaged) {
-            cancelDodge();
-        }
     }
 
     @SubscribeEvent

@@ -1,9 +1,16 @@
 package org.devlukadev.skywarstoolsmod.features.tablevels;
 
+import net.minecraft.client.gui.FontRenderer;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
+import org.devlukadev.skywarstoolsmod.utils.TextAlignUtil;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.responses.SkyWarsResponse;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Turns a SkyWarsResponse + the user's format string (config.tabLevelText)
@@ -11,44 +18,90 @@ import java.text.DecimalFormat;
  */
 public class TabStringConstructor {
 
+    private static final Pattern TOKEN_PATTERN = Pattern.compile("%\\w+%");
     private static final DecimalFormat RATIO_FORMAT = new DecimalFormat("0.00");
     private static final DecimalFormat NUMBER_FORMAT = new DecimalFormat("#,###");
+    private static String cachedFormat = null;
+    private static List<String> cachedTemplate = null;
 
     private static final String UNKNOWN_LEVEL = "§c[?]";
     private static final String LOADING_LEVEL = "§7[1✯]";
     private static final String MISSING_STAT = "-";
 
-    private TabStringConstructor() {}
+    /** Splits the format string into literal/token pieces, in order. Cached until the format changes. */
+    private static List<String> template(String format) {
+        if (format.equals(cachedFormat)) return cachedTemplate;
 
-    /**
-     * Builds the full replacement tab name.
-     *
-     * @param response       stats for this player, or null if we don't have them (yet, or ever)
-     * @param originalName   whatever GuiPlayerTabOverlay#getPlayerName originally returned
-     *                       (Hypixel rank prefix, colors, nickname, etc.) - used for %default%
-     * @param confirmedNicked true if we know this player is nicked and will never resolve to stats
-     *                        (skip the "loading" state and show the permanent unknown marker instead)
-     */
-    public static String build(SkyWarsResponse response, String originalName, boolean confirmedNicked) {
-        String format = SkyWarsToolsMod.config.tabLevelText;
-        if (format == null || format.isEmpty()) {
-            return originalName;
+        List<String> parts = new ArrayList<>();
+        Matcher m = TOKEN_PATTERN.matcher(format);
+        int last = 0;
+        while (m.find()) {
+            if (m.start() > last) parts.add(format.substring(last, m.start()));
+            parts.add(m.group()); // e.g. "%level%"
+            last = m.end();
         }
+        if (last < format.length()) parts.add(format.substring(last));
 
-        String levelToken = resolveLevelToken(response, confirmedNicked);
+        cachedFormat = format;
+        cachedTemplate = parts;
+        return parts;
+    }
 
-        String result = format;
-        result = result.replace("%default%", safe(originalName));
-        result = result.replace("%level%", levelToken);
-        result = result.replace("%wl%", ratio(response, "wins", "losses"));
-        result = result.replace("%kd%", ratio(response, "kills", "deaths"));
-        result = result.replace("%kills%", stat(response, "kills"));
-        result = result.replace("%wins%", stat(response, "wins"));
-        result = result.replace("%deaths%", stat(response, "deaths"));
-        result = result.replace("%losses%", stat(response, "losses"));
-        result = result.replace("%exp%", expStat(response));
+    private static boolean isToken(String part) {
+        return part.length() > 1 && part.charAt(0) == '%' && part.charAt(part.length() - 1) == '%';
+    }
 
-        return translateColorCodes(result);
+    /** Resolves one token to its display value (no padding, colors translated). */
+    private static String resolveToken(String token, SkyWarsResponse response, String originalName, boolean confirmedNicked) {
+        switch (token) {
+            case "%default%": return translateColorCodes(safe(originalName));
+            case "%level%":   return translateColorCodes(resolveLevelToken(response, confirmedNicked));
+            case "%wl%":      return translateColorCodes(ratio(response, "wins", "losses"));
+            case "%kd%":      return translateColorCodes(ratio(response, "kills", "deaths"));
+            case "%kills%":   return translateColorCodes(stat(response, "kills"));
+            case "%wins%":    return translateColorCodes(stat(response, "wins"));
+            case "%deaths%":  return translateColorCodes(stat(response, "deaths"));
+            case "%losses%":  return translateColorCodes(stat(response, "losses"));
+            case "%exp%":     return translateColorCodes(expStat(response));
+            default:          return token; // unknown token, leave as-is
+        }
+    }
+
+    /** Returns the ordered, resolved-but-unpadded pieces for one player. Used both for width scanning and final build. */
+    public static List<String> resolveSegments(SkyWarsResponse response, String originalName, boolean confirmedNicked) {
+        String format = SkyWarsToolsMod.config.levelsText;
+        if (format == null || format.isEmpty()) {
+            return Collections.singletonList(originalName);
+        }
+        List<String> pieces = new ArrayList<>();
+        for (String part : template(format)) {
+            pieces.add(isToken(part)
+                    ? resolveToken(part, response, originalName, confirmedNicked)
+                    : translateColorCodes(part));
+        }
+        return pieces;
+    }
+
+    /** Builds the final aligned string using precomputed per-index column widths (index into resolveSegments()). */
+    public static String buildAligned(SkyWarsResponse response, String originalName, boolean confirmedNicked,
+                                      FontRenderer fr, int[] colWidths) {
+        String format = SkyWarsToolsMod.config.levelsText;
+        if (format == null || format.isEmpty()) return originalName;
+
+        List<String> template = template(format);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < template.size(); i++) {
+            String part = template.get(i);
+            String value = isToken(part)
+                    ? resolveToken(part, response, originalName, confirmedNicked)
+                    : translateColorCodes(part);
+
+            if (isToken(part) && colWidths != null && i < colWidths.length) {
+                value = TextAlignUtil.padToWidth(fr, value, colWidths[i]);
+            }
+            sb.append(value);
+        }
+        return sb.toString();
     }
 
     private static String resolveLevelToken(SkyWarsResponse response, boolean confirmedNicked) {

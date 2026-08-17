@@ -56,6 +56,8 @@ public class KitSelectorFixEvent {
     // Global tick counter
     private int totalTicks = 0;
 
+    Pattern pattern = Pattern.compile("^§[a5](.+?)([§&]6 ✯)*$");
+
     // ------------------------------------------------------------------
     // Inventory open/close detection
     // ------------------------------------------------------------------
@@ -85,13 +87,14 @@ public class KitSelectorFixEvent {
         if (!kitSelectOpen) return;
         if (!(event.gui instanceof GuiContainer)) return;
         if (!Mouse.getEventButtonState()) return; // only react on press, not release
+
         GuiContainer gui = (GuiContainer) event.gui;
         Slot slot = gui.getSlotUnderMouse();
 
         if (slot != null && slot.getHasStack()) {
 
             lastClickedStack = slot.getStack().copy();
-            Pattern pattern = Pattern.compile("^§a(.+?)§6 ✯$");
+
             Matcher kitNameMatcher = pattern.matcher(lastClickedStack.getDisplayName());
             if (!kitNameMatcher.find()) {
                 return;
@@ -122,21 +125,20 @@ public class KitSelectorFixEvent {
 
         if (lastClickedStack == null) return;
 
-        Pattern pattern = Pattern.compile("^§a(.+?)§6 ✯$");
         Matcher kitNameMatcher = pattern.matcher(lastClickedStack.getDisplayName());
+//        ChatLib.chat(lastClickedStack.getDisplayName());
         if (!kitNameMatcher.find()) {
             return;
         }
 
 
         String kitName = kitNameMatcher.group(1); // e.g. "Pig Rider"
-        System.out.println(kitName);
-        System.out.println(selectedName);
+//        ChatLib.chat(kitName + " - " + selectedName);
         if (!namesMatch(kitName, selectedName)) {
 
             Minecraft.getMinecraft().thePlayer.playSound("mob.villager.no", 1F, 1F);
-            ChatLib.chat("&cKit did not select correctly! Trying again...");
-            reclick();
+            ChatLib.chat("&cKit did not select correctly!");
+//            reclick();
         }
 
     }

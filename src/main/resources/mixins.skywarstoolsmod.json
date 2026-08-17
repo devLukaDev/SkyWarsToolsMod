@@ -9,7 +9,8 @@
   "client": [
     "TabLevelsMixin",
     "HotbarItemsMixin",
-    "TakeItemFromGUIMixin"
+    "TakeItemFromGUIMixin",
+    "TabColumnRecomputeMixin"
   ],
   "verbose": true
 }
