@@ -10,6 +10,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.devlukadev.skywarstoolsmod.command.ExampleCommand;
+import org.devlukadev.skywarstoolsmod.command.SWTCommand;
 import org.devlukadev.skywarstoolsmod.features.autododge.OpenAutododgeGUI;
 import org.devlukadev.skywarstoolsmod.config.SWTConfig;
 import cc.polyfrost.oneconfig.events.event.InitializationEvent;
@@ -27,6 +28,7 @@ import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerHUD;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerInventory;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerManager;
 import org.devlukadev.skywarstoolsmod.updater.SWTUpdater;
+import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
 
@@ -45,6 +47,8 @@ public class SkyWarsToolsMod {
     public static final String MODID = "@ID@";
     public static final String NAME = "@NAME@";
     public static final String VERSION = "@VER@";
+
+    public static final String SWT_API = "https://api.skywarstools.com/api";
     @Mod.Instance(MODID)
     public static SkyWarsToolsMod INSTANCE; // Adds the instance of the mod, so we can access other variables.
     public static SWTConfig config;
@@ -69,6 +73,8 @@ public class SkyWarsToolsMod {
         HypixelUtils.INSTANCE.initialize();
         CommandManager.INSTANCE.registerCommand(new ExampleCommand());
         MinecraftForge.EVENT_BUS.register(new ClientScheduler());
+
+        MinecraftForge.EVENT_BUS.register(this); // For Debug event below
 
         // Hypixel Mod API
         HypixelModAPI.getInstance().subscribeToEventPacket(ClientboundLocationPacket.class);
@@ -102,8 +108,9 @@ public class SkyWarsToolsMod {
         //Sessions
         SessionTracker sessionTracker = new SessionTracker();
         LocationUtil.addListener(sessionTracker::onLocationReceived);
+        MinecraftForge.EVENT_BUS.register(sessionTracker);
 
-        MinecraftForge.EVENT_BUS.register(this); // For event below
+        CommandManager.INSTANCE.registerCommand(new SWTCommand());
 
     }
 
@@ -112,7 +119,7 @@ public class SkyWarsToolsMod {
         if (Minecraft.getMinecraft().gameSettings.showDebugInfo) {
             event.left.add("");
             event.left.add("SkyWarsToolsMod @VER@");
-            event.left.add("TabListCache: " + SkyWarsRequestCache.getCacheSize());
+            event.left.add("ResponseCache: " + SkyWarsRequestCache.getCacheSize());
 
         }
     }

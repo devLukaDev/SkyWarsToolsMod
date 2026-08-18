@@ -1,5 +1,6 @@
 package org.devlukadev.skywarstoolsmod.features.tablevels;
 
+import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.Fetch;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.responses.SkyWarsResponse;
 
@@ -31,7 +32,7 @@ public class SkyWarsRequestCache {
                 uuidCache,
                 uuidPending,
                 uuidLastFetch,
-                "https://api.skywarstools.com/api/skywars?player=" + uuid
+                SkyWarsToolsMod.SWT_API + "/skywars?player=" + uuid
         );
     }
 
@@ -44,7 +45,7 @@ public class SkyWarsRequestCache {
                 nameCache,
                 namePending,
                 nameLastFetch,
-                "https://api.skywarstools.com/api/skywars?player=" + playerName
+                SkyWarsToolsMod.SWT_API + "/skywars?player=" + playerName
         );
     }
 

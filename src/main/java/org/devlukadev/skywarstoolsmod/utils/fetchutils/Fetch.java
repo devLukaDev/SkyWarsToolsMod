@@ -31,7 +31,7 @@ public class Fetch {
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(timeoutMs);
             connection.setReadTimeout(timeoutMs);
-            connection.setRequestProperty("User-Agent", "YourMod/1.0");
+            connection.setRequestProperty("User-Agent", "SkyWarsToolsMod/@VER@");
 
             return handleResponse(connection);
         } finally {

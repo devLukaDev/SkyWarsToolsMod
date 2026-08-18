@@ -13,9 +13,9 @@ import static org.devlukadev.skywarstoolsmod.utils.MessagePattern.*;
 
 public class LastGameEXPEvents {
 
-    private static float lastXP = 0;
+    private static double lastXP = 0;
 
-    public static float getLastXP() {
+    public static double getLastXP() {
         return lastXP;
     }
 
@@ -32,7 +32,7 @@ public class LastGameEXPEvents {
 
         matcher = SKYWARS_XP_MULTIPLIER.matcher(message);
         if (matcher.matches()) {
-            float multiplier = Float.parseFloat(matcher.group(1)); // 1.2
+            double multiplier = Double.parseDouble(matcher.group(1)); // 1.2
             System.out.println(multiplier);
             lastXP *= multiplier;
             return;

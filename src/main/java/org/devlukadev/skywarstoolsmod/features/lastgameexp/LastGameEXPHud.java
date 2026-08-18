@@ -1,6 +1,11 @@
 package org.devlukadev.skywarstoolsmod.features.lastgameexp;
 
 import cc.polyfrost.oneconfig.hud.SingleTextHud;
+import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
+import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class LastGameEXPHud extends SingleTextHud {
 
@@ -14,15 +19,16 @@ public class LastGameEXPHud extends SingleTextHud {
 
     @Override
     protected String getText(boolean example) {
-        float lastXP = LastGameEXPEvents.getLastXP();
+        double lastXP = LastGameEXPEvents.getLastXP();
 
-        if (lastXP == 0.0f) return "§f" + 0;
+        return "§f" + BigDecimal.valueOf(lastXP)
+                .setScale(2, RoundingMode.HALF_UP)
+                .stripTrailingZeros()
+                .toPlainString();
+    }
 
-        float rounded = Math.round(lastXP * 100) / 100.0f;
-
-        if (rounded == Math.floor(rounded)) {
-            return "§f" + (int) rounded;
-        }
-        return "§f" + rounded;
+    @Override
+    public boolean shouldShow() {
+        return super.shouldShow() && LocationUtil.isInSkyWars();
     }
 }

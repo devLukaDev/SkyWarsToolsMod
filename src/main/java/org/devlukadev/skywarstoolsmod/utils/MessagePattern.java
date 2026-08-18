@@ -38,7 +38,7 @@ public final class MessagePattern {
      * Regex pattern for <pre>+2 SkyWars Experience! (Kill)</pre>
      */
     public static final Pattern GENERAL_XP_EVENT_GROUP =
-            Pattern.compile("§r§d\\+3 SkyWars Experience! (.*?)§r");
+            Pattern.compile("§r§d\\+\\d+ SkyWars Experience! (Win)(?: \\(w/ .*?\\))?§r");
 
 
     /**

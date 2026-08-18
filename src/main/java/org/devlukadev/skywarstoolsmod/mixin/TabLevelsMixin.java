@@ -140,5 +140,4 @@ public class TabLevelsMixin {
         }
         return TabRowRenderContext.max;
     }
-
 }

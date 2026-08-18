@@ -38,6 +38,8 @@ public final class SWTUpdater extends ModUpdater {
         ComparableVersion latest = this.latestVersion;
         System.out.println("SkyWarsToolsMod Versions: current=" + currentV + ", latest=" + latest);
 
+
+
         if (this.updateInfo != null) {
             final String releaseLink = "https://github.com/devLukaDev/SkyWarsToolsMod/releases";
 
@@ -77,6 +79,8 @@ public final class SWTUpdater extends ModUpdater {
                 ChatLib.chat("&aYou are using the latest version of SkyWarsToolsMod! (&f" + current + "&a)");
             }
         }
+
+        ChatLib.chat("This mod is in development! This means there might be bugs. If you find any, please report them (: - Luka");
     }
 
 }

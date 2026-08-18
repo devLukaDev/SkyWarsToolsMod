@@ -7,12 +7,18 @@ import cc.polyfrost.oneconfig.config.data.InfoType;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 
+import cc.polyfrost.oneconfig.config.data.PageLocation;
 import cc.polyfrost.oneconfig.config.elements.BasicOption;
 import cc.polyfrost.oneconfig.config.elements.OptionPage;
 import cc.polyfrost.oneconfig.utils.gui.GuiUtils;
+import net.minecraft.client.Minecraft;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
+import org.devlukadev.skywarstoolsmod.config.options.IntroductionOption;
+import org.devlukadev.skywarstoolsmod.config.pages.InfoPage;
 import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeScreen;
 import org.devlukadev.skywarstoolsmod.features.lastgameexp.LastGameEXPHud;
+import org.devlukadev.skywarstoolsmod.features.sessions.SessionHUD;
+import org.devlukadev.skywarstoolsmod.features.sessions.SessionManager;
 import org.devlukadev.skywarstoolsmod.features.tablevels.TabPreviewOption;
 
 import java.lang.reflect.Field;
@@ -23,16 +29,18 @@ import java.lang.reflect.Field;
  */
 public class SWTConfig extends Config {
     // ==== About ====
-    @Info(
-            text = "Version: @VER@",
-            type = InfoType.INFO
+
+    @CustomOption(id = "introductionOption")
+    public boolean yesa = true;
+
+    @Page(
+            name = "All commands",
+            location = PageLocation.BOTTOM,
+            // optional description that is also displayed on the page button
+            description = "See all commands than can be run!"
     )
-    public static boolean ignoredb; // Useless. Java limitations with @annotation.
-    @Info(
-            text = "By devLukaDev",
-            type = InfoType.INFO
-    )
-    public static boolean adjhsa;
+    public static InfoPage commandsPage = new InfoPage();
+
     // ==== EXP Display ====
     @Switch(
             name = "Enable EXP Display",
@@ -75,15 +83,6 @@ public class SWTConfig extends Config {
     )
     public boolean autododgeEnabled = true;
 
-    @Button(
-            name = "Maps to Dodge",
-            text = "Open GUI",
-            category = "Autododge"
-    )
-    Runnable runnable = () -> {
-        GuiUtils.displayScreen(new AutododgeScreen());
-    };
-
     @Switch(
             name = "Enable Autododge Sound",
             description = "Whether to play sounds when dodging",
@@ -105,8 +104,16 @@ public class SWTConfig extends Config {
     )
     public boolean autododgeInverted = false;
 
-    // ==== SkyWars Levels ====
+    @Button(
+            name = "Maps to Dodge",
+            text = "Open GUI",
+            category = "Autododge"
+    )
+    Runnable runnable = () -> {
+        GuiUtils.displayScreen(new AutododgeScreen());
+    };
 
+    // ==== SkyWars Levels ====
     @Switch(
             name = "Enable SkyWars Levels",
             description = "Enable automatic SkyWars levels to be shown when joining a game",
@@ -130,7 +137,7 @@ public class SWTConfig extends Config {
             category = "SkyWars Levels",
             size = 2,
             text = "You can use \"%default%\", \"%level%\", \"%wl%\", \"%kd%\", \"%kills%\", \"%wins%\", \"%deaths%\", " +
-                    "\"%losses%\", \"%exp%\", as well as & for colour codes.", type = InfoType.INFO)
+                    "\"%losses%\", \"%exp%\", and & for colour codes.", type = InfoType.INFO)
     public boolean bs = true;
 
     @Text(
@@ -214,6 +221,32 @@ public class SWTConfig extends Config {
     )
     public boolean sessionsEnabled = true;
 
+    @Button(
+            category = "Sessions",
+            name = "Sync with Hypixel API",
+            text = "Sync"
+    )
+    Runnable runnable4 = () -> {
+        SessionManager.getInstance().sync(Minecraft.getMinecraft().thePlayer.getName());
+    };
+
+    @Button(
+            category = "Sessions",
+            name = "Reset/Start session",
+            text = "Reset"
+    )
+    Runnable runnable5 = () -> {
+        SessionManager.getInstance().startSession(Minecraft.getMinecraft().thePlayer.getName());
+    };
+
+
+    @HUD(
+            category = "Sessions",
+            name = "Sessions HUD"
+    )
+    public SessionHUD sessionHUD = new SessionHUD();
+
+
 
     public SWTConfig() {
         super(new Mod(SkyWarsToolsMod.NAME, ModType.UTIL_QOL, "/logo-480.png"), SkyWarsToolsMod.MODID + ".json");
@@ -246,6 +279,17 @@ public class SWTConfig extends Config {
                         "Preview a name in tab", // description
                         "SkyWars Levels",         // category
                         "", 0                // size: 0 = single column, 1 = double
+                );
+                ConfigUtils.getSubCategory(page, option.category, option.subcategory).options.add(option);
+                break;
+            case "introductionOption":
+                option = new IntroductionOption(
+                        field,
+                        null,               // parent — null since there's no bound variable, like the category example
+                        "General information",  // name
+                        "General information", // description
+                        "General",         // category
+                        "", 1                // size: 0 = single column, 1 = double
                 );
                 ConfigUtils.getSubCategory(page, option.category, option.subcategory).options.add(option);
                 break;
