@@ -1,7 +1,13 @@
 package org.devlukadev.skywarstoolsmod.features.usagetimer;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -111,9 +117,27 @@ public class UsageTimerManager {
             if (isOnCooldown("endlord_pearl")) return;
             wasTimeWarpPearlJustThrown = true;
         }
-
+        if (key.equalsIgnoreCase("echo_clock")) {
+            if (isOnCooldown("echo_clock")) return;
+            if (isVoidBelow(Minecraft.getMinecraft().thePlayer)) return; // Clock cant be used, ignored
+        }
 
         UsageTimerManager.onItemUsed(key);
+    }
+
+    public boolean isVoidBelow(EntityPlayer player) {
+        World world = player.worldObj;
+        int x = MathHelper.floor_double(player.posX);
+        int z = MathHelper.floor_double(player.posZ);
+        int startY = MathHelper.floor_double(player.posY) - 1;
+
+        for (int y = startY; y >= 0; y--) {
+            Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
+            if (block != Blocks.air) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

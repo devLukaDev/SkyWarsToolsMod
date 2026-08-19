@@ -90,9 +90,9 @@ public class AutododgeEvents {
                     EnumChatFormatting.GREEN + "Want to remove this map from the dodge list? "
             );
 
-            ChatComponentText link = new ChatComponentText("Open the config here.");
+            ChatComponentText link = new ChatComponentText("Click to open the config.");
             ChatStyle style = new ChatStyle();
-            style.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/autododge"));
+            style.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/swt autododge"));
             style.setUnderlined(true);
             style.setColor(EnumChatFormatting.AQUA);
             link.setChatStyle(style);

@@ -73,7 +73,11 @@ public class SessionManager {
 
     public synchronized void addPlaytime(long amount) {
         data.time_played += amount;
-        ChatLib.chat("added " + amount + " to get total of " + data.time_played);
+//        save();
+    }
+
+    public synchronized  void addHead(){
+        data.heads++;
         save();
     }
 
@@ -105,7 +109,8 @@ public class SessionManager {
                     }
                     if (response.source != null && response.source.equals("cache")) {
                         Minecraft.getMinecraft().addScheduledTask(() ->
-                                ChatLib.chat("Detected cache response; retrieved stats might be slightly outdated."));
+                                ChatLib.chat("Detected cached response; retrieved stats might be slightly outdated. " +
+                                        "If you notice they are; resync in ~1 minute."));
                     }
                     reconcile(response.stats);
                     syncInProgress = false;
@@ -128,17 +133,44 @@ public class SessionManager {
             // Session deltas are whatever's already been tracked locally since session start.
             data.baseline = snapshotOf(fresh);
         } else {
-            // Re-derive session deltas from the source of truth so drift from
-            // any missed/misparsed chat line gets corrected. Baseline itself never moves.
+            long oldKills = data.kills, oldDeaths = data.deaths, oldWins = data.wins,
+                    oldLosses = data.losses, oldHeads = data.heads, oldTimePlayed = data.time_played;
+            double oldXp = data.xpGained;
+
             data.kills = fresh.kills - data.baseline.kills;
             data.deaths = fresh.deaths - data.baseline.deaths;
             data.wins = fresh.wins - data.baseline.wins;
             data.losses = fresh.losses - data.baseline.losses;
+            data.heads = fresh.heads - data.baseline.heads;
             data.time_played = fresh.time_played - data.baseline.time_played;
             data.xpGained = fresh.skywars_experience - data.baseline.xp;
+
+            printDiffs(oldKills, oldDeaths, oldWins, oldLosses, oldHeads, oldTimePlayed, oldXp);
         }
         data.lastSync = System.currentTimeMillis();
         save();
+    }
+
+    private void printDiffs(long oldKills, long oldDeaths, long oldWins, long oldLosses, long oldHeads, long oldTimePlayed, double oldXp) {
+        long dKills = data.kills - oldKills;
+        long dDeaths = data.deaths - oldDeaths;
+        long dWins = data.wins - oldWins;
+        long dLosses = data.losses - oldLosses;
+        long dHeads = data.heads - oldHeads;
+        long dTimePlayed = data.time_played - oldTimePlayed;
+        double dXp = data.xpGained - oldXp;
+
+        if (dKills == 0 && dDeaths == 0 && dWins == 0 && dLosses == 0 && dTimePlayed == 0 && dXp == 0 && oldDeaths == 0) {
+            return;
+        }
+
+        ChatLib.chat("[SessionSync] Corrected drift - kills: " + oldKills + " -> " + data.kills + " (" + dKills + "), " +
+                "deaths: " + oldDeaths + " -> " + data.deaths + " (" + dDeaths + "), " +
+                "wins: " + oldWins + " -> " + data.wins + " (" + dWins + "), " +
+                "losses: " + oldLosses + " -> " + data.losses + " (" + dLosses + "), " +
+                "heads: " + oldHeads + " -> " + data.heads + " (" + dHeads + "), " +
+                "time_played: " + oldTimePlayed + " -> " + data.time_played + " (" + dTimePlayed + "), " +
+                "xpGained: " + oldXp + " -> " + data.xpGained + " (" + dXp + ")");
     }
 
     private SessionData.BaselineSnapshot snapshotOf(OverallResponse.Stats stats) {
@@ -147,6 +179,7 @@ public class SessionManager {
         snap.deaths = stats.deaths;
         snap.wins = stats.wins;
         snap.losses = stats.losses;
+        snap.heads = stats.heads;
         snap.time_played = stats.time_played;
         snap.xp = stats.skywars_experience;
         snap.fetchedAt = System.currentTimeMillis();
@@ -160,6 +193,7 @@ public class SessionManager {
         current.deaths = data.baseline.deaths + data.deaths;
         current.wins = data.baseline.wins + data.wins;
         current.losses = data.baseline.losses + data.losses;
+        current.heads = data.baseline.heads + data.heads;
         current.time_played = data.baseline.losses + data.time_played;
         current.xp = data.baseline.xp + data.xpGained;
         return current;

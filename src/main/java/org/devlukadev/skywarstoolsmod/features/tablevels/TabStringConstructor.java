@@ -108,7 +108,10 @@ public class TabStringConstructor {
         if (confirmedNicked) {
             return UNKNOWN_LEVEL;
         }
-        if (response == null || response.display == null || response.display.levelFormattedWithBrackets == null) {
+        if (response == null) {
+            return UNKNOWN_LEVEL;
+        }
+        if(response.display == null || response.display.levelFormattedWithBrackets == null) {
             return LOADING_LEVEL;
         }
         return response.display.levelFormattedWithBrackets.trim();

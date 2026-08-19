@@ -14,7 +14,7 @@ import cc.polyfrost.oneconfig.utils.gui.GuiUtils;
 import net.minecraft.client.Minecraft;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.config.options.IntroductionOption;
-import org.devlukadev.skywarstoolsmod.config.pages.InfoPage;
+import org.devlukadev.skywarstoolsmod.config.pages.CommandsPage;
 import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeScreen;
 import org.devlukadev.skywarstoolsmod.features.lastgameexp.LastGameEXPHud;
 import org.devlukadev.skywarstoolsmod.features.sessions.SessionHUD;
@@ -39,7 +39,7 @@ public class SWTConfig extends Config {
             // optional description that is also displayed on the page button
             description = "See all commands than can be run!"
     )
-    public static InfoPage commandsPage = new InfoPage();
+    public static CommandsPage commandsPage = new CommandsPage();
 
     // ==== EXP Display ====
     @Switch(
@@ -107,7 +107,8 @@ public class SWTConfig extends Config {
     @Button(
             name = "Maps to Dodge",
             text = "Open GUI",
-            category = "Autododge"
+            category = "Autododge",
+            size = 2
     )
     Runnable runnable = () -> {
         GuiUtils.displayScreen(new AutododgeScreen());
@@ -174,50 +175,13 @@ public class SWTConfig extends Config {
             category = "Enhanced Who"
     )
     public boolean islandFinderAutoWho = false;
-    // === Item Cooldowns ===
-    @Switch(
-            name = "Enable Item Cooldowns HUD",
-            description = "Enables a HUD around the crosshair that shows relevant information on item cooldowns",
-            category = "CooldownsHUD"
-    )
-    public boolean cooldownsHUDEnabled = true;
-
-    @Slider(
-            name = "Icon size",
-            category = "CooldownsHUD",
-            min = 1,
-            max = 200
-    )
-    public int cooldownsHUDSize = 50;
-
-    @Slider(
-            name = "Distance from crosshair",
-            category = "CooldownsHUD",
-            min = 1,
-            max = 200
-    )
-    public int cooldownsHUDDistance = 50;
-
-
-    // ==== Fixes ====
-    @Switch(
-            name = "Kit Select Fix (BROKEN: WIP)",
-            description = "Attempts to fix kit selecting",
-            category = "Fixes"
-    )
-    public boolean kitSelectFix = true;
-    @Switch(
-            name = "Prevent Taking Lapis while Enchanting",
-            description = "Makes sure you cannot accidentally take lapis from the enchanting table",
-            category = "Fixes"
-    )
-    public boolean etableFix = true;
 
     // == Sessions ==
     @Switch(
             name = "Enable Session Tracker",
             description = "HyStats-esque session tracker, makes estimated stats based on chat events",
-            category = "Sessions"
+            category = "Sessions",
+            size = 2
     )
     public boolean sessionsEnabled = true;
 
@@ -246,6 +210,44 @@ public class SWTConfig extends Config {
     )
     public SessionHUD sessionHUD = new SessionHUD();
 
+    // === Item Cooldowns ===
+    @Switch(
+            name = "Enable Item Cooldowns HUD",
+            description = "Enables a HUD around the crosshair that shows relevant information on item cooldowns",
+            category = "CooldownsHUD"
+    )
+    public boolean cooldownsHUDEnabled = true;
+
+    @Slider(
+            name = "Icon size",
+            category = "CooldownsHUD",
+            min = 1,
+            max = 200
+    )
+    public int cooldownsHUDSize = 50;
+
+    @Slider(
+            name = "Distance from crosshair",
+            category = "CooldownsHUD",
+            min = 1,
+            max = 200
+    )
+    public int cooldownsHUDDistance = 50;
+
+
+    // ==== Fixes ====
+    @Switch(
+            name = "Kit Select Bug Warning",
+            description = "Warns the user when a wrong kit is selected",
+            category = "Fixes"
+    )
+    public boolean kitSelectFix = true;
+    @Switch(
+            name = "Prevent Taking Lapis while Enchanting",
+            description = "Makes sure you cannot accidentally take lapis from the enchanting table",
+            category = "Fixes"
+    )
+    public boolean etableFix = true;
 
 
     public SWTConfig() {

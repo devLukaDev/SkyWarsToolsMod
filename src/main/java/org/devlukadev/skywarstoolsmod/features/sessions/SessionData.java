@@ -7,6 +7,7 @@ public class SessionData {
     public int losses = 0;
     public long time_played = 0;
     public double xpGained = 0;
+    public int heads;
     public long sessionStartMillis = System.currentTimeMillis();
     public long lastSync = -1;
 
@@ -17,6 +18,7 @@ public class SessionData {
         public int deaths;
         public int wins;
         public int losses;
+        public int heads;
         public long time_played;
         public double xp;
         public long fetchedAt;

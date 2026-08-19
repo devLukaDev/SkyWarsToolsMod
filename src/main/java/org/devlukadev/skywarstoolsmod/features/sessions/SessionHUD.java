@@ -9,6 +9,7 @@ import cc.polyfrost.oneconfig.platform.Platform;
 import cc.polyfrost.oneconfig.renderer.TextRenderer;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
+import org.devlukadev.skywarstoolsmod.utils.SWTUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,23 +51,30 @@ public class SessionHUD extends BasicHud {
         SessionData data = SessionManager.getInstance().getData();
         SessionData.BaselineSnapshot baseline = SessionManager.getInstance().getCurrentStats();
         lines.add("Wins: §" + baseline.wins + "§ | W/L: §" +
-                (baseline.losses == 0 ? "∞" : String.format("%.2f", (double) baseline.wins / baseline.losses)));
+                (baseline.losses == 0 ? (baseline.wins > 0 ? "∞" : "0.00") : String.format("%.2f", (double) baseline.wins / baseline.losses)));
 
         lines.add("Kills: §" + baseline.kills + "§ | K/D: §" +
-                (baseline.deaths == 0 ? "∞" : String.format("%.2f", (double) baseline.kills / baseline.deaths)));
+                (baseline.deaths == 0 ? (baseline.kills > 0 ? "∞" : "0.00") : String.format("%.2f", (double) baseline.kills / baseline.deaths)));
 
         lines.add("Session Wins: §" + data.wins + "§ | W/L: §" +
-                (data.losses == 0 ? "∞" : String.format("%.2f", (double) data.wins / data.losses)));
+                (data.losses == 0 ? (data.wins > 0 ? "∞" : "0.00") : String.format("%.2f", (double) data.wins / data.losses)));
 
         lines.add("Session Kills: §" + data.kills + "§ | K/D: §" +
-                (data.deaths == 0 ? "∞" : String.format("%.2f", (double) data.kills / data.deaths)));
+                ((data.deaths == 0 ? (data.kills > 0 ? "∞" : "0.00") : String.format("%.2f", (double) data.kills / data.deaths))));
 
         lines.add("Session EXP: §" + data.xpGained + "§ | EXP/H: §" +
                 (data.time_played == 0 ? "∞" : Math.round(data.xpGained / (data.time_played / 3600.0))));
 
+        lines.add("Session Heads: §" + data.heads + "§ | Heads: §" + baseline.heads);
+
         lines.add("Session Time: §" + timeSince(data.sessionStartMillis));
 
         lines.add("Session Playtime: §" + formatTimestamp(data.time_played));
+
+        double levelValue = SWTUtils.calcLevel(baseline.xp);
+        lines.add(buildLevelProgressLine(levelValue));
+
+
     }
 
 
@@ -205,6 +213,31 @@ public class SessionHUD extends BasicHud {
 
         return String.format("%02d:%02d:%02d", hours, minutes, secs);
 
+    }
+
+    private String buildLevelProgressLine(double levelValue) {
+        int segments = 20;
+        int currentLevel = (int) Math.floor(levelValue);
+        double progress = levelValue - currentLevel;
+        int filled = (int) Math.round(progress * segments);
+
+        StringBuilder bar = new StringBuilder();
+        bar.append(currentLevel).append(" [");
+        for (int i = 0; i < segments; i++) {
+            if (i == filled) {
+                bar.append("   ");
+                bar.append(Math.round(progress * 100));
+                bar.append("%");
+                bar.append("   ");
+                bar.append("§");
+            }
+            bar.append("|");
+        }
+        bar.append("§] ").append(currentLevel + 1);
+
+
+
+        return bar.toString();
     }
 
 }

@@ -10,6 +10,7 @@ import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.MessagePattern;
+import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +25,9 @@ public class SessionTracker {
     boolean gameStarted = false;
     boolean gameWon = false;
     double xpThisGamePrePotion = 0;
-    long playtimeStart = -1;
-    long playtimeEnd = -1;
+    boolean countPlaytime = false;
+    long playTimeSeconds = 0;
+    boolean sentReminder = false;
     Map<String, Double> frequency = new HashMap<>();
 
     @SubscribeEvent
@@ -49,7 +51,7 @@ public class SessionTracker {
                     SessionManager.getInstance().addWin();
                     frequency.merge("win", 1d, Double::sum);
                     gameWon = true;
-                    playtimeEnd = System.currentTimeMillis() / 1000;
+                    countPlaytime = false;
                     break;
                 default:
                     break;
@@ -79,16 +81,36 @@ public class SessionTracker {
         Matcher deathMatcher = MessagePattern.YOU_DIED.matcher(message);
         if (deathMatcher.matches()) {
             playerDied = true; // Player might still win (teams), so no less yet
-            playtimeEnd = System.currentTimeMillis() / 1000;
+            countPlaytime = false;
             SessionManager.getInstance().addDeath();
             frequency.merge("death", 1d, Double::sum);
 
         }
 
+        Matcher headMatcher = MessagePattern.HEAD_GATHERED.matcher(message);
+        if (headMatcher.matches()) {
+            SessionManager.getInstance().addHead();
+            frequency.merge("head", 1d, Double::sum);
+
+        }
+
+        Matcher gameEndMatcher = MessagePattern.GAME_END.matcher(message);
+        if (gameEndMatcher.matches()) {
+            ClientScheduler.schedule(1, () -> {
+                if (!playerDied && !gameWon) {
+                    countPlaytime = false;
+                    playerDied = true;
+                    SessionManager.getInstance().addDeath();
+                    frequency.merge("death", 1d, Double::sum);
+
+                }
+            });
+        }
+
         Matcher startMatcher = MessagePattern.GAME_START.matcher(message);
         if (startMatcher.matches()) {
             gameStarted = true;
-            playtimeStart = System.currentTimeMillis() / 1000;
+            countPlaytime = true;
         }
 
     }
@@ -98,10 +120,17 @@ public class SessionTracker {
         if (!LocationUtil.isInSkyWars()) return;
 
         if (SessionManager.getInstance().getCurrentStats() == null) {
-            ChatLib.chat("&cWARNING: &eYou have no session started yet. Run &b/swt sessions start");
+            ChatLib.chat("&cWARNING: &eYou have no session started yet. Run &b/swt sessions reset");
             Minecraft.getMinecraft().thePlayer.playSound("mob.villager.no", 1F, 1F);
             return;
         }
+        if (System.currentTimeMillis() - SessionManager.getInstance().getData().sessionStartMillis >= 1000 * 60 * 60 * 4 && !sentReminder) {
+            ChatLib.chat("&cWARNING: &eYour session is more than 4 hours old. Want to reset? Run &b/swt sessions reset");
+            Minecraft.getMinecraft().thePlayer.playSound("mob.villager.no", 1F, 1F);
+            sentReminder = true;
+            return;
+        }
+
         // Cases for when we receive this packet
         if (gameStarted) {
             // Previous game was a thing!
@@ -111,16 +140,13 @@ public class SessionTracker {
                 frequency.merge("loss", 1d, Double::sum);
                 if (!playerDied) {
                     // No game won event seen, nor a death event? -> Player logged out -> count death + loss
-                    playtimeEnd = System.currentTimeMillis() / 1000;
+                    countPlaytime = false;
                     SessionManager.getInstance().addDeath();
                     frequency.merge("death", 1d, Double::sum);
                 }
 
             }
 
-            long playTimeLastGame = playtimeEnd - playtimeStart;
-            SessionManager.getInstance().addPlaytime(playTimeLastGame);
-            frequency.put("time_played", (double) playTimeLastGame);
 
         }
 
@@ -128,14 +154,17 @@ public class SessionTracker {
             ChatLib.chat("Previous game stats:");
             frequency.forEach((result, count) ->
                     ChatLib.chat(result + ": " + count));
+            ChatLib.chat("Playtime counted: " + playTimeSeconds);
             ChatLib.chat("Not correct? Report this with replay file please!");
+
         }
 
-        //Reset
+        //Reset when in new server
         frequency = new HashMap<>();
         playerDied = false;
         gameStarted = false;
         gameWon = false;
+        playTimeSeconds = 0;
     }
 
     @SubscribeEvent
@@ -144,6 +173,22 @@ public class SessionTracker {
             frequency.forEach((result, count) ->
                     event.left.add(result + ": " + count));
 
+        }
+    }
+
+    private int secondCounter = 0;
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (!SkyWarsToolsMod.config.sessionsEnabled) return;
+        if (event.phase != TickEvent.Phase.END) return;
+
+        if (++secondCounter < 20) return;
+        secondCounter = 0;
+
+        if (countPlaytime) {
+            SessionManager.getInstance().addPlaytime(1);
+            playTimeSeconds++;
         }
     }
 

@@ -38,7 +38,7 @@ public final class MessagePattern {
      * Regex pattern for <pre>+2 SkyWars Experience! (Kill)</pre>
      */
     public static final Pattern GENERAL_XP_EVENT_GROUP =
-            Pattern.compile("§r§d\\+\\d+ SkyWars Experience! (Win)(?: \\(w/ .*?\\))?§r");
+            Pattern.compile("§r§d\\+\\d+ SkyWars Experience! (Win|Kill)(?: \\(w/ .*?\\))?§r");
 
 
     /**
@@ -47,6 +47,23 @@ public final class MessagePattern {
     public static final Pattern YOU_DIED = Pattern.compile(
             "^§cYou died! §r§eWant to play again\\?§r§b§l Click here! §r$"
     );
+
+    /**
+     * For some reason if you die as last 2, You died is not printed! This captures the ending scoreboard
+     */
+    public static final Pattern GAME_END = Pattern.compile(
+            "^§r§e§r§f {34}§r§f§lSkyWars§r$"
+    );
+
+    /**
+     * For some reason if you die as last 2, You died is not printed!
+     */
+    public static final Pattern HEAD_GATHERED = Pattern.compile(
+            "^§r§f\\[☬] §r§5Angel of Death§r§f:$"
+    );
+
+
+
 
 
 
