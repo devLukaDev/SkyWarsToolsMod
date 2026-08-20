@@ -10,6 +10,7 @@ public class OverallResponse {
     public long queried;
     public String uuid;
     public Stats stats;
+    public SkyWarsResponse.Display display;
     public String source;
 
     public static class NextSave {
@@ -31,6 +32,15 @@ public class OverallResponse {
         public int wins;
         public int losses;
         public long time_played;
+        public int customs_kitsMaxPrestige;
+        public String activeKit_SOLO;
+        public String activeKit_TEAM;
+        public String activeKit_MINI;
+        public int blocks_broken;
+        public int blocks_placed;
+        public int kills_solo;
+        public int wins_solo;
+        public int survived_players;
     }
 
     public static class Brewery {

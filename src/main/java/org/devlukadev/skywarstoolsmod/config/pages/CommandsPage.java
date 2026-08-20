@@ -6,6 +6,7 @@ import cc.polyfrost.oneconfig.renderer.font.Fonts;
 import cc.polyfrost.oneconfig.utils.InputHandler;
 import cc.polyfrost.oneconfig.utils.gui.GuiUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.client.ClientCommandHandler;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeScreen;
 import org.devlukadev.skywarstoolsmod.features.sessions.SessionManager;
@@ -13,18 +14,18 @@ import org.devlukadev.skywarstoolsmod.features.sessions.SessionManager;
 public class CommandsPage extends Page {
 
     private static final CommandEntry[] COMMANDS = {
-            new CommandEntry("/swt", "Opens the SkyWarsTools config GUI",
-                    () -> SkyWarsToolsMod.config.openGui()),
-            new CommandEntry("/swt sessions sync", "Re-syncs session stats against Hypixel API",
-                    () -> SessionManager.getInstance().sync(Minecraft.getMinecraft().thePlayer.getName())),
-            new CommandEntry("/swt sessions reset", "Resets the current session and starts a new one",
-                    () -> SessionManager.getInstance().startSession(Minecraft.getMinecraft().thePlayer.getName())),
-            new CommandEntry("/swt autododge", "Opens the Autododge screen",
-                    () -> GuiUtils.displayScreen(new AutododgeScreen()))
+            new CommandEntry("/swt", "Opens the SkyWarsTools config GUI"),
+            new CommandEntry("/swt sessions sync", "Re-syncs session stats against Hypixel API"),
+            new CommandEntry("/swt sessions reset", "Resets the current session and starts a new one"),
+            new CommandEntry("/swt autododge", "Opens the Autododge screen"),
+            new CommandEntry("/swt stats overall " + "<Player>", "Get overall stats"),
+            new CommandEntry("/swlevel " + "<Player>", "Shorthand for /swt stats overall"),
+            new CommandEntry("/swt stats names " + "<Player>", "Fetches past usernames of the player"),
+            new CommandEntry("/swt stats mining " + "<Player>", "Fetches mining risk of the player"),
     };
 
     private static final int ROW_HEIGHT = 32;
-    private static final int CMD_COL_WIDTH = 200;
+    private static final int CMD_COL_WIDTH = 300;
     private static final int BUTTON_WIDTH = 100;
     private static final int BUTTON_HEIGHT = 28;
 
@@ -49,7 +50,7 @@ public class CommandsPage extends Page {
             NanoVGHelper.INSTANCE.drawText(vg, entry.description,
                     x + 20 + CMD_COL_WIDTH, rowY, -1, 16, Fonts.REGULAR);
 
-            int buttonX = x + 20 + CMD_COL_WIDTH + 720;
+            int buttonX = x + 20 + CMD_COL_WIDTH + 620;
             int buttonY = rowY - 12;
 
             boolean hovered = inputHandler.isAreaHovered(buttonX, buttonY, BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -62,7 +63,8 @@ public class CommandsPage extends Page {
                     -1, 20, Fonts.REGULAR);
 
             if (hovered && inputHandler.isClicked()) {
-                entry.action.run();
+                String commandReplaced = entry.command.replace("<Player>", Minecraft.getMinecraft().thePlayer.getName());
+                ClientCommandHandler.instance.executeCommand(Minecraft.getMinecraft().thePlayer, commandReplaced);
             }
         }
     }
@@ -75,12 +77,10 @@ public class CommandsPage extends Page {
     private static class CommandEntry {
         final String command;
         final String description;
-        final Runnable action;
 
-        CommandEntry(String command, String description, Runnable action) {
+        CommandEntry(String command, String description) {
             this.command = command;
             this.description = description;
-            this.action = action;
         }
     }
 }

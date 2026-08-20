@@ -9,7 +9,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.devlukadev.skywarstoolsmod.command.ExampleCommand;
+import org.apache.logging.log4j.LogManager;
+import org.devlukadev.skywarstoolsmod.command.SWLevel;
 import org.devlukadev.skywarstoolsmod.command.SWTCommand;
 import org.devlukadev.skywarstoolsmod.features.autododge.OpenAutododgeGUI;
 import org.devlukadev.skywarstoolsmod.config.SWTConfig;
@@ -25,14 +26,14 @@ import org.devlukadev.skywarstoolsmod.features.sessions.SessionTracker;
 import org.devlukadev.skywarstoolsmod.features.tablevels.SkyWarsRequestCache;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.TimeWarpPearlTracker;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerHUD;
-import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerInventory;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerManager;
 import org.devlukadev.skywarstoolsmod.updater.SWTUpdater;
-import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
 
 import java.io.File;
+
+import org.apache.logging.log4j.Logger;
 
 /**
  * The entrypoint of the Example Mod that initializes it.
@@ -52,6 +53,7 @@ public class SkyWarsToolsMod {
     @Mod.Instance(MODID)
     public static SkyWarsToolsMod INSTANCE; // Adds the instance of the mod, so we can access other variables.
     public static SWTConfig config;
+    public static final Logger logger = LogManager.getLogger("@NAME@");
 
     private File cacheFolder;
 
@@ -62,7 +64,7 @@ public class SkyWarsToolsMod {
         new SWTUpdater(event.getSourceFile()).start();
     }
 
-    public File getCacheFolder(){
+    public File getCacheFolder() {
         return cacheFolder;
     }
 
@@ -71,7 +73,7 @@ public class SkyWarsToolsMod {
     public void onInit(FMLInitializationEvent event) {
         config = new SWTConfig();
         HypixelUtils.INSTANCE.initialize();
-        CommandManager.INSTANCE.registerCommand(new ExampleCommand());
+        CommandManager.INSTANCE.registerCommand(new SWLevel());
         MinecraftForge.EVENT_BUS.register(new ClientScheduler());
 
         MinecraftForge.EVENT_BUS.register(this); // For Debug event below
@@ -88,11 +90,8 @@ public class SkyWarsToolsMod {
 
         // Autododge
         AutododgeEvents autododge = new AutododgeEvents();
-
         LocationUtil.addListener(autododge::onLocationReceived);
         MinecraftForge.EVENT_BUS.register(autododge);
-
-        CommandManager.INSTANCE.registerCommand(new OpenAutododgeGUI());
 
         // Enhanced Who
         MinecraftForge.EVENT_BUS.register(new EnhancedWho());
@@ -110,7 +109,10 @@ public class SkyWarsToolsMod {
         LocationUtil.addListener(sessionTracker::onLocationReceived);
         MinecraftForge.EVENT_BUS.register(sessionTracker);
 
+
+        // Commands
         CommandManager.INSTANCE.registerCommand(new SWTCommand());
+        CommandManager.INSTANCE.registerCommand(new SWLevel());
 
     }
 
