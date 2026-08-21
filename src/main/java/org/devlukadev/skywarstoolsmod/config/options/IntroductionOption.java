@@ -1,19 +1,13 @@
 package org.devlukadev.skywarstoolsmod.config.options;
 
-import cc.polyfrost.oneconfig.config.core.OneColor;
 import cc.polyfrost.oneconfig.config.elements.BasicOption;
 import cc.polyfrost.oneconfig.renderer.NanoVGHelper;
+import cc.polyfrost.oneconfig.renderer.asset.Image;
 import cc.polyfrost.oneconfig.renderer.font.Fonts;
 import cc.polyfrost.oneconfig.utils.InputHandler;
-import cc.polyfrost.oneconfig.utils.color.ColorUtils;
-import net.minecraft.client.Minecraft;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class IntroductionOption extends BasicOption {
     /**
@@ -39,6 +33,8 @@ public class IntroductionOption extends BasicOption {
     // padding
     private int cursorY;
 
+    private static final Image logo = new Image("/logo-480.png", 32);
+
     public void draw(long vg, int x, int y, InputHandler inputHandler) {
         // padding
         int tx = x + 16;
@@ -61,10 +57,10 @@ public class IntroductionOption extends BasicOption {
         drawLine(vg, tx, "Credits", 12, -1);
         drawLine(vg, tx, "Main developer: devLukaDev", 12, -1);
         drawLine(vg, tx, "Attributions:", 12, -1);
-        drawLine(vg, tx, "Alexdoru - Updater", 12, -1);
+        drawLine(vg, tx, "Alexdoru - Updater, Nick-detect", 12, -1);
         drawLine(vg, tx, "Yedelo - Launch Tweaker", 12, -1);
 
-        NanoVGHelper.INSTANCE.drawImage(vg, "https://skywarstools.com/logo.png", x + 700, y + 10, 300, 300, SkyWarsToolsMod.class);
+        NanoVGHelper.INSTANCE.drawImage(vg, logo, x + 700, y + 10, 300, 300);
 
 
     }

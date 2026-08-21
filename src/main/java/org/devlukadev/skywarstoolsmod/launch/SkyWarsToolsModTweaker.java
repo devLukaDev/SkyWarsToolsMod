@@ -27,7 +27,7 @@ import java.util.jar.JarFile;
  * Loads the OneConfig wrapper tweaker and loads the Hypixel Mod API.
  */
 public class SkyWarsToolsModTweaker implements ITweaker {
-    public static final Logger yedelog = LogManager.getLogger("SkyWarsToolsModTweaker");
+    public static final Logger logger = LogManager.getLogger("SkyWarsToolsModTweaker");
     @SuppressWarnings("unchecked")
     private static final List<String> TweakClasses = (List<String>) Launch.blackboard.get("TweakClasses");
 
@@ -44,7 +44,7 @@ public class SkyWarsToolsModTweaker implements ITweaker {
             queueTweaker("Mod Requeue", ModRequeueTweaker.class.getName());
         }
         else {
-            yedelog.info("In development environment, skipping Mod API and mod requeue tweakers!");
+            logger.info("In development environment, skipping Mod API and mod requeue tweakers!");
         }
     }
 
@@ -87,11 +87,11 @@ public class SkyWarsToolsModTweaker implements ITweaker {
                 }
             }
             catch (IOException e) {
-                yedelog.fatal("Couldn't instantiate JarFile from mod file! Local copy compatibility will not work.");
+                logger.fatal("Couldn't instantiate JarFile from mod file! Local copy compatibility will not work.");
             }
         }
         if (modApiFile != null) {
-            yedelog.info("Found local copy of Hypixel Mod API with version {}, loading local copy compatibility...", modApiVersion);
+            logger.info("Found local copy of Hypixel Mod API with version {}, loading local copy compatibility...", modApiVersion);
             queueTweaker("Local Mod API Compatibility", LocalCopyCompatibilityTweaker.class.getName());
         }
     }
@@ -103,11 +103,11 @@ public class SkyWarsToolsModTweaker implements ITweaker {
         String propertyName = "yedelmod.launch." + name.toLowerCase().replace(" ", "-");
         String propertyValue = System.getProperty(propertyName);
         if (!Objects.equals(propertyValue, "false")) {
-            yedelog.info("Queueing {} tweaker {}", name, className);
+            logger.info("Queueing {} tweaker {}", name, className);
             TweakClasses.add(className);
         }
         else {
-            yedelog.warn("Skipping queueing of {} tweaker {}, property {} = false!", name, className, propertyName);
+            logger.warn("Skipping queueing of {} tweaker {}, property {} = false!", name, className, propertyName);
         }
     }
 

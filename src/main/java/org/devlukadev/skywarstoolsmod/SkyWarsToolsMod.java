@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
 import org.devlukadev.skywarstoolsmod.command.SWLevel;
 import org.devlukadev.skywarstoolsmod.command.SWTCommand;
-import org.devlukadev.skywarstoolsmod.features.autododge.OpenAutododgeGUI;
 import org.devlukadev.skywarstoolsmod.config.SWTConfig;
 import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,6 +28,7 @@ import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerHUD;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerManager;
 import org.devlukadev.skywarstoolsmod.updater.SWTUpdater;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
+import org.devlukadev.skywarstoolsmod.utils.MCName;
 import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
 
 import java.io.File;
@@ -78,6 +78,9 @@ public class SkyWarsToolsMod {
 
         MinecraftForge.EVENT_BUS.register(this); // For Debug event below
 
+        // Nick tracker
+        MinecraftForge.EVENT_BUS.register(new MCName());
+
         // Hypixel Mod API
         HypixelModAPI.getInstance().subscribeToEventPacket(ClientboundLocationPacket.class);
         HypixelModAPI.getInstance().createHandler(ClientboundLocationPacket.class, LocationUtil::onLocationReceived);
@@ -122,6 +125,7 @@ public class SkyWarsToolsMod {
             event.left.add("");
             event.left.add("SkyWarsToolsMod @VER@");
             event.left.add("ResponseCache: " + SkyWarsRequestCache.getCacheSize());
+            event.left.add("HypixelName: " + MCName.getName());
 
         }
     }

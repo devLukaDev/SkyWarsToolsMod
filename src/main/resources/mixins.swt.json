@@ -9,7 +9,8 @@
   "client": [
     "TabLevelsMixin",
     "HotbarItemsMixin",
-    "TakeItemFromGUIMixin"
+    "TakeItemFromGUIMixin",
+    "NickBookMixin"
   ],
   "verbose": true
 }

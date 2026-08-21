@@ -1,4 +1,4 @@
-package org.devlukadev.skywarstoolsmod.features.tablevels;
+package org.devlukadev.skywarstoolsmod.config.options;
 
 import cc.polyfrost.oneconfig.config.elements.BasicOption;
 import cc.polyfrost.oneconfig.renderer.NanoVGHelper;
@@ -61,11 +61,11 @@ public class TabPreviewOption extends BasicOption {
     private static final int DEFAULT_COLOR = ColorUtils.getColor(255, 255, 255, 255);
 
     public void draw(long vg, int x, int y, InputHandler inputHandler) {
-        NanoVGHelper.INSTANCE.drawRect(
-                vg,
-                x, y, x + 630, 80,
-                ColorUtils.getColor(20, 20, 20, 100)
-        );
+//        NanoVGHelper.INSTANCE.drawRect(
+//                vg,
+//                x, y, x + 630, 80,
+//                ColorUtils.getColor(20, 20, 20, 100)
+//        );
 
         String example = applyPlaceholders(SkyWarsToolsMod.config.levelsText);
         drawColoredCenteredText(vg, example, x + 480, y + 40);

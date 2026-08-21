@@ -13,13 +13,13 @@ import cc.polyfrost.oneconfig.config.elements.OptionPage;
 import cc.polyfrost.oneconfig.utils.gui.GuiUtils;
 import net.minecraft.client.Minecraft;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
-import org.devlukadev.skywarstoolsmod.config.options.IntroductionOption;
+import org.devlukadev.skywarstoolsmod.config.options.*;
 import org.devlukadev.skywarstoolsmod.config.pages.CommandsPage;
 import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeScreen;
 import org.devlukadev.skywarstoolsmod.features.lastgameexp.LastGameEXPHud;
 import org.devlukadev.skywarstoolsmod.features.sessions.SessionHUD;
 import org.devlukadev.skywarstoolsmod.features.sessions.SessionManager;
-import org.devlukadev.skywarstoolsmod.features.tablevels.TabPreviewOption;
+import org.devlukadev.skywarstoolsmod.config.options.TabPreviewOption;
 
 import java.lang.reflect.Field;
 
@@ -41,7 +41,9 @@ public class SWTConfig extends Config {
     )
     public static CommandsPage commandsPage = new CommandsPage();
 
+
     // ==== EXP Display ====
+
     @Switch(
             name = "Enable EXP Display",
             description = "Master switch for enabling/disabling the entire Last Game Experience feature.",
@@ -54,7 +56,6 @@ public class SWTConfig extends Config {
             category = "LastGameEXP", subcategory = "Settings"
     )
     public static boolean asji; // Useless. Java limitations with @annotation.
-
 
     @Switch(
             name = "Show Only On Death/Win",
@@ -74,8 +75,10 @@ public class SWTConfig extends Config {
     )
     public LastGameEXPHud lastGameEXPHud = new LastGameEXPHud();
 
-    // ==== Autododge ====
+    @EnglishWarningOptionAnnotation(category = "LastGameEXP", subcategory = "Settings")
+    public static boolean skywarsEnglishWarninga = true;
 
+    // ==== Autododge ====
     @Switch(
             name = "Enable Autododge",
             description = "Whether to enable SkyWars Autododge",
@@ -113,6 +116,9 @@ public class SWTConfig extends Config {
     Runnable runnable = () -> {
         GuiUtils.displayScreen(new AutododgeScreen());
     };
+
+    @EnglishWarningOptionAnnotation(category = "Autododge")
+    public static boolean skywarsEnglishWarningb = true;
 
     // ==== SkyWars Levels ====
     @Switch(
@@ -154,7 +160,6 @@ public class SWTConfig extends Config {
 
 
     // ==== Enhanced Who ====
-
     @Switch(
             name = "Enable Enhanced Who",
             description = "On /who, tells you where the other teams are relative to you",
@@ -175,6 +180,10 @@ public class SWTConfig extends Config {
             category = "Enhanced Who"
     )
     public boolean islandFinderAutoWho = false;
+
+
+    @EnglishWarningOptionAnnotation(category = "Enhanced Who")
+    public static boolean skywarsEnglishWarninge = true;
 
     // == Sessions ==
     @Switch(
@@ -203,12 +212,17 @@ public class SWTConfig extends Config {
         SessionManager.getInstance().startSession(Minecraft.getMinecraft().thePlayer.getName());
     };
 
+    @EnglishWarningOptionAnnotation(category = "Sessions")
+    public static boolean skywarsEnglishWarningh = true;
+
 
     @HUD(
             category = "Sessions",
             name = "Sessions HUD"
     )
     public SessionHUD sessionHUD = new SessionHUD();
+
+
 
     // === Item Cooldowns ===
     @Switch(
@@ -248,6 +262,10 @@ public class SWTConfig extends Config {
             category = "Fixes"
     )
     public boolean etableFix = true;
+
+
+    // Non-editable properties
+    public String mostRecentNick;
 
 
     public SWTConfig() {
@@ -294,6 +312,30 @@ public class SWTConfig extends Config {
                         "", 1                // size: 0 = single column, 1 = double
                 );
                 ConfigUtils.getSubCategory(page, option.category, option.subcategory).options.add(option);
+                break;
+            case "englishWarningOption":
+                EnglishWarningOptionAnnotation englishWarning = ConfigUtils.findAnnotation(field, EnglishWarningOptionAnnotation.class);
+                option = new EnglishWarningOption(
+                        field,
+                        null,
+                        "Warning English",
+                        "Some features might work, but this one does not",
+                        englishWarning.category(),
+                        englishWarning.subcategory(), 2
+                );
+                ConfigUtils.getSubCategory(page, option.category, option.subcategory).options.add(option);
+                break;
+            case "empty":
+                EmptyOptionAnnotation emptyOptionAnnotation = ConfigUtils.findAnnotation(field, EmptyOptionAnnotation.class);
+                option = new EmptyOption(
+                        field,
+                        this,
+                        emptyOptionAnnotation.name(),
+                        emptyOptionAnnotation.description(),
+                        emptyOptionAnnotation.category(),
+                        emptyOptionAnnotation.subcategory(),
+                        emptyOptionAnnotation.size());
+                ConfigUtils.getSubCategory(page, emptyOptionAnnotation.category(), emptyOptionAnnotation.subcategory()).options.add(option);
                 break;
         }
         return option;
