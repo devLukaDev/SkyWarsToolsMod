@@ -10,7 +10,7 @@ import java.math.RoundingMode;
 public class LastGameEXPHud extends SingleTextHud {
 
     public LastGameEXPHud() {
-        super("&6EXP Last Game", true);
+        super("§6EXP Last Game", true);
     }
 
     public void setVisibility(boolean visible){

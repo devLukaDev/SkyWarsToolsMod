@@ -165,6 +165,7 @@ public class SessionTracker {
         gameStarted = false;
         gameWon = false;
         playTimeSeconds = 0;
+        xpThisGamePrePotion = 0;
     }
 
     @SubscribeEvent

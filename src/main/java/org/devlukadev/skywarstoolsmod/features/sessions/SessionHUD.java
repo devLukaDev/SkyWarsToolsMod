@@ -50,6 +50,13 @@ public class SessionHUD extends BasicHud {
 
         SessionData data = SessionManager.getInstance().getData();
         SessionData.BaselineSnapshot baseline = SessionManager.getInstance().getCurrentStats();
+
+        if (data == null | baseline == null){
+            lines.add("You haven't started a session yet.");
+            lines.add("§/swt session reset");
+            return;
+        }
+
         lines.add("Wins: §" + baseline.wins + "§ | W/L: §" +
                 (baseline.losses == 0 ? (baseline.wins > 0 ? "∞" : "0.00") : String.format("%.2f", (double) baseline.wins / baseline.losses)));
 

@@ -60,7 +60,7 @@ public class UsageTimerManager {
         if (GAME_START.matcher(message).matches()) {
             // Game starts
             long now = System.currentTimeMillis();
-            ChatLib.chat("Game started at " + now);
+//            ChatLib.chat("Game started at " + now);
             for (ItemCooldown def : DEFINITIONS.values()) {
                 cooldownEndTimes.put(def.key, now + def.gameStartSeconds * 1000L);
             }
