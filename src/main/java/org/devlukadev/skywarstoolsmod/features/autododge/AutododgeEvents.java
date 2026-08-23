@@ -8,13 +8,17 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
+import org.devlukadev.skywarstoolsmod.utils.MCName;
+import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
 
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AutododgeEvents {
 
@@ -26,15 +30,12 @@ public class AutododgeEvents {
     // Static because called elsewhere by hypixel mod api handler
     public void onLocationReceived(ClientboundLocationPacket packet) {
         if (!SkyWarsToolsMod.config.autododgeEnabled) return;
-
         // We have switched locations since a dodge, either into a new map or lobby
         if (dodgingEngaged) {
             dodgingEngaged = false;
             dodgeTicksLeft = -1;
         }
-
         if (!packet.getMap().isPresent()) return; // In a lobby, we dont check for new dodge
-
         final String map = packet.getMap().get();
         final String[] dodgeMaps = AutododgeStorage.load().toArray(new String[0]);
         if (dodgeMaps.length == 0) {
@@ -42,20 +43,38 @@ public class AutododgeEvents {
             return;
         }
 
-        if (!SkyWarsToolsMod.config.autododgeInverted) {
-            if (!Arrays.asList(dodgeMaps).contains(map)) return;
-        } else {
-            if (Arrays.asList(dodgeMaps).contains(map)) return;
+        final boolean mapDodge = !SkyWarsToolsMod.config.autododgeInverted
+                ? Arrays.asList(dodgeMaps).contains(map)
+                : !Arrays.asList(dodgeMaps).contains(map);
+
+        if (mapDodge) {
+            startDodge(map, true, false, 100); // 5 seconds
         }
 
+        if (SkyWarsToolsMod.config.autododgePlayersEnabled) {
+            ClientScheduler.schedule(1, () -> {
+                PlayersDodge.shouldDodgePlayerInTab().thenAccept(playerDodge -> {
+                    if (playerDodge && !dodgingEngaged) {
+                        startDodge(map, mapDodge, true, 99);
+                    }
+                });
+            });
+        }
+    }
 
-        // We are in a map that needs to be dodged!
-        ChatLib.chat("&aMap &e" + map + "&a is on dodge list! Dodging in &e5&a seconds...", true);
+    private void startDodge(String map, boolean mapDodge, boolean playerDodge, int ticks) {
+        int seconds = ticks / 20;
+        if (mapDodge && playerDodge) {
+            ChatLib.chat("&aMap &e" + map + "&a and a flagged player are on dodge list! Dodging in &e" + seconds + "&a seconds...", true);
+        } else if (mapDodge) {
+            ChatLib.chat("&aMap &e" + map + "&a is on dodge list! Dodging in &e" + seconds + "&a seconds...", true);
+        } else {
+            ChatLib.chat("&aA flagged player is in tab! Dodging in &e" + seconds + "&a seconds...", true);
+        }
         ChatLib.chat("&cHOLD SNEAK TO CANCEL DODGING!", true);
-
-        ChatLib.showTitle("§cDodging", "HOLD SNEAK TO CANCEL", 10, 100, 10);
+        ChatLib.showTitle("§cDodging", "HOLD SNEAK TO CANCEL", 10, ticks, 10);
         dodgingEngaged = true;
-        dodgeTicksLeft = 100; // 5 seconds * 20 ticks
+        dodgeTicksLeft = ticks;
     }
 
     @SubscribeEvent
@@ -110,6 +129,7 @@ public class AutododgeEvents {
 
         final String GAME_STARTS_SOON = "§r§e§r§eThe game starts in §r§a§r§c1§r§e second!§r§e§r";
         final String GAME_START = "§r§eCages opened! §r§cFIGHT!§r";
+        Matcher m = Pattern.compile("(?:§[0-9a-fk-or])+([^§]+?)(?:§[0-9a-fk-or])+ has joined").matcher(msg);
 
         if (msg.equals(GAME_STARTS_SOON)) {
             if (dodgingEngaged) {
@@ -126,6 +146,14 @@ public class AutododgeEvents {
                 cancelDodge();
                 ChatLib.chat("&cGame started too quickly... Could not dodge in time, sorry about that!", true);
             }
+        } else if (m.find()) {
+            String player = m.group(1); // "SkyWarsTools"
+            if (!SkyWarsToolsMod.config.autododgePlayersEnabled) return;
+            PlayersDodge.checkPlayer(player).thenAccept(shouldDodge -> {
+                if (shouldDodge && !dodgingEngaged) {
+                    startDodge(null, false, true, 100);
+                }
+            });
         }
     }
 

@@ -133,9 +133,7 @@ public class TabLevelsMixin {
     // Setting the width to fit
     @ModifyVariable(method = "renderPlayerlist", at = @At("STORE"), ordinal = 1)
     private int modifyTabListWidth(int j) {
-        if (TabRowRenderContext.max == 0 || !LocationUtil.isInSkyWars() || LocationUtil.isInLobby()) {
-            TabRowRenderContext.max = 0;
-            // Reset to zero so any value is bigger again, so it can be incrementally increased to fit new players
+        if (TabRowRenderContext.max == 0) {
             return j;
         }
         return TabRowRenderContext.max;

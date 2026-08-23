@@ -28,7 +28,9 @@ public class TabStringConstructor {
     private static final String LOADING_LEVEL = "§7[1✯]";
     private static final String MISSING_STAT = "-";
 
-    /** Splits the format string into literal/token pieces, in order. Cached until the format changes. */
+    /**
+     * Splits the format string into literal/token pieces, in order. Cached until the format changes.
+     */
     private static List<String> template(String format) {
         if (format.equals(cachedFormat)) return cachedTemplate;
 
@@ -51,23 +53,69 @@ public class TabStringConstructor {
         return part.length() > 1 && part.charAt(0) == '%' && part.charAt(part.length() - 1) == '%';
     }
 
-    /** Resolves one token to its display value (no padding, colors translated). */
+    /**
+     * Resolves one token to its display value (no padding, colors translated).
+     */
     private static String resolveToken(String token, SkyWarsResponse response, String originalName, boolean confirmedNicked) {
         switch (token) {
-            case "%default%": return translateColorCodes(safe(originalName));
-            case "%level%":   return translateColorCodes(resolveLevelToken(response, confirmedNicked));
-            case "%wl%":      return translateColorCodes(ratio(response, "wins", "losses"));
-            case "%kd%":      return translateColorCodes(ratio(response, "kills", "deaths"));
-            case "%kills%":   return translateColorCodes(stat(response, "kills"));
-            case "%wins%":    return translateColorCodes(stat(response, "wins"));
-            case "%deaths%":  return translateColorCodes(stat(response, "deaths"));
-            case "%losses%":  return translateColorCodes(stat(response, "losses"));
-            case "%exp%":     return translateColorCodes(expStat(response));
-            default:          return token; // unknown token, leave as-is
+            case "%default%":
+                return translateColorCodes(safe(originalName));
+            case "%level%":
+                return translateColorCodes(resolveLevelToken(response, confirmedNicked));
+            case "%wl%":
+                return translateColorCodes(ratio(response, "wins", "losses", "wl"));
+            case "%kd%":
+                return translateColorCodes(ratio(response, "kills", "deaths", "kd"));
+            case "%kills%":
+                return translateColorCodes(stat(response, "kills"));
+            case "%wins%":
+                return translateColorCodes(stat(response, "wins"));
+            case "%deaths%":
+                return translateColorCodes(stat(response, "deaths"));
+            case "%losses%":
+                return translateColorCodes(stat(response, "losses"));
+            case "%exp%":
+                return translateColorCodes(expStat(response));
+            default:
+                return token; // unknown token, leave as-is
         }
     }
 
-    /** Returns the ordered, resolved-but-unpadded pieces for one player. Used both for width scanning and final build. */
+    private static final String DARK_GREY = "§8";
+    private static final String LIGHT_GREY = "§7";
+    private static final String WHITE = "§f";
+
+    private static String getColour(double value, String category) {
+        double low, high;
+        switch (category) {
+            case "wl":
+                low = 0.1;
+                high = 1;
+                break;
+            case "kd":
+                low = 1;
+                high = 5;
+                break;
+            case "kills":
+                low = 1000;
+                high = 100000;
+                break;
+            case "wins":
+                low = 100;
+                high = 10000;
+                break;
+            default:
+                return DARK_GREY;
+        }
+
+        if (value <= low) return DARK_GREY;
+        if (value <= high) return LIGHT_GREY;
+        return WHITE;
+    }
+
+    /**
+     * Returns the ordered, resolved-but-unpadded pieces for one player. Used both for width scanning and final build.
+     */
     public static List<String> resolveSegments(SkyWarsResponse response, String originalName, boolean confirmedNicked) {
         String format = SkyWarsToolsMod.config.levelsText;
         if (format == null || format.isEmpty()) {
@@ -82,7 +130,9 @@ public class TabStringConstructor {
         return pieces;
     }
 
-    /** Builds the final aligned string using precomputed per-index column widths (index into resolveSegments()). */
+    /**
+     * Builds the final aligned string using precomputed per-index column widths (index into resolveSegments()).
+     */
     public static String buildAligned(SkyWarsResponse response, String originalName, boolean confirmedNicked,
                                       FontRenderer fr, int[] colWidths) {
         String format = SkyWarsToolsMod.config.levelsText;
@@ -111,38 +161,42 @@ public class TabStringConstructor {
         if (response == null) {
             return UNKNOWN_LEVEL;
         }
-        if(response.display == null || response.display.levelFormattedWithBrackets == null) {
+        if (response.display == null || response.display.levelFormattedWithBrackets == null) {
             return LOADING_LEVEL;
         }
         return response.display.levelFormattedWithBrackets.trim();
     }
 
-    private static String ratio(SkyWarsResponse response, String numeratorField, String denominatorField) {
+    private static String ratio(SkyWarsResponse response, String numeratorField, String denominatorField, String category) {
         if (response == null || response.stats == null) {
             return MISSING_STAT;
         }
         long numerator = statValue(response, numeratorField);
         long denominator = statValue(response, denominatorField);
-        if (denominator == 0) {
-            return RATIO_FORMAT.format(numerator);
-        }
-        return RATIO_FORMAT.format((double) numerator / (double) denominator);
+        double value = denominator == 0 ? numerator : (double) numerator / denominator;
+        return getColour(value, category) + RATIO_FORMAT.format(value);
     }
 
     private static String stat(SkyWarsResponse response, String field) {
         if (response == null || response.stats == null) {
             return MISSING_STAT;
         }
-        return NUMBER_FORMAT.format(statValue(response, field));
+        long value = statValue(response, field);
+        return getColour(value, field) + NUMBER_FORMAT.format(value);
     }
 
     private static long statValue(SkyWarsResponse response, String field) {
         switch (field) {
-            case "wins": return response.stats.wins;
-            case "losses": return response.stats.losses;
-            case "kills": return response.stats.kills;
-            case "deaths": return response.stats.deaths;
-            default: throw new IllegalArgumentException("Unknown stat field: " + field);
+            case "wins":
+                return response.stats.wins;
+            case "losses":
+                return response.stats.losses;
+            case "kills":
+                return response.stats.kills;
+            case "deaths":
+                return response.stats.deaths;
+            default:
+                throw new IllegalArgumentException("Unknown stat field: " + field);
         }
     }
 
@@ -171,4 +225,5 @@ public class TabStringConstructor {
         }
         return new String(chars);
     }
+
 }

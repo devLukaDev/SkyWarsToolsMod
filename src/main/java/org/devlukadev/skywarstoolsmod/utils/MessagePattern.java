@@ -56,11 +56,20 @@ public final class MessagePattern {
     );
 
     /**
-     * For some reason if you die as last 2, You died is not printed!
+     * Head gathered
      */
     public static final Pattern HEAD_GATHERED = Pattern.compile(
-            "^\\[☬] §r§5Angel of Death§r$"
+            "§r§5Angel of Death§r§f:"
     );
+
+    /**
+     * Teams cages open in 10 seconds
+     */
+    public static final Pattern TEAMS_CAGE_TP = Pattern.compile(
+            "^§r§eCages open in: §r§c10 §r§eseconds!§r$"
+    );
+
+
 
 
 

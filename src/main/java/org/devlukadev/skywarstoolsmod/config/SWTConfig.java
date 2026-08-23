@@ -117,6 +117,32 @@ public class SWTConfig extends Config {
         GuiUtils.displayScreen(new AutododgeScreen());
     };
 
+    @Switch(
+            name = "Dodge Tagged Players",
+            description = "Automatically dodge players that you've tagged as such",
+            category = "Autododge",
+            subcategory = "Player dodge"
+    )
+    public boolean autododgePlayersEnabled = false;
+
+    @Slider(
+            name = "K/D To Dodge",
+            min = 0.0F,
+            max = 15.0F,
+            description = "Minimum K/D to automatically dodge",
+            category = "Autododge",
+            subcategory = "Player dodge")
+    public float autododgePlayersKD = 5;
+
+    @Slider(
+            name = "W/L To Dodge",
+            min = 0.0F,
+            max = 15.0F,
+            description = "Minimum W/L to automatically dodge",
+            category = "Autododge",
+            subcategory = "Player dodge")
+    public float autododgePlayersWL = 1.5F;
+
     @EnglishWarningOptionAnnotation(category = "Autododge")
     public static boolean skywarsEnglishWarningb = true;
 
@@ -221,7 +247,6 @@ public class SWTConfig extends Config {
             name = "Sessions HUD"
     )
     public SessionHUD sessionHUD = new SessionHUD();
-
 
 
     // === Item Cooldowns ===

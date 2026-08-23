@@ -37,7 +37,6 @@ public class SessionTracker {
         if (!SkyWarsToolsMod.config.sessionsEnabled) return;
 
         String message = event.message.getFormattedText();
-        System.out.println(message);
 
         Matcher killWinMatcher = MessagePattern.GENERAL_XP_EVENT_GROUP.matcher(message);
         if (killWinMatcher.find()) {
@@ -87,9 +86,12 @@ public class SessionTracker {
 
         }
 
+        System.out.println(message);
         Matcher headMatcher = MessagePattern.HEAD_GATHERED.matcher(message);
-        if (headMatcher.matches()) {
+        System.out.println(headMatcher);
+        if (headMatcher.find()) {
             SessionManager.getInstance().addHead();
+            ChatLib.chat("Head tracked!");
             frequency.merge("head", 1d, Double::sum);
 
         }

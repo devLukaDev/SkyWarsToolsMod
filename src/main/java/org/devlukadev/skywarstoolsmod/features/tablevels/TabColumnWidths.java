@@ -3,6 +3,7 @@ package org.devlukadev.skywarstoolsmod.features.tablevels;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
+import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 import org.devlukadev.skywarstoolsmod.utils.NickDetector;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.responses.SkyWarsResponse;
 
@@ -36,6 +37,7 @@ public class TabColumnWidths {
                 resp = SkyWarsRequestCache.getStats(p.getGameProfile().getId());
                 nicked = false;
             }
+
 
             List<String> segs = TabStringConstructor.resolveSegments(resp, originalName, nicked);
             if (max == null) max = new int[segs.size()];

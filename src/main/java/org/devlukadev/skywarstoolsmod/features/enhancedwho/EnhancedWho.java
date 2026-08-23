@@ -7,8 +7,10 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
+import org.devlukadev.skywarstoolsmod.features.tablevels.TabRowRenderContext;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
+import org.devlukadev.skywarstoolsmod.utils.MCName;
 import org.devlukadev.skywarstoolsmod.utils.RenderUtils;
 import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
 
@@ -22,8 +24,11 @@ import static org.devlukadev.skywarstoolsmod.utils.MessagePattern.GAME_START;
 
 public class EnhancedWho {
 
-    private static final Pattern TEAM_LINE = Pattern.compile("^§rTeam #(\\d{1,2}):((?: §r§.[^§]+§r,?)+)$");
-    private static final Pattern PLAYER_ENTRY = Pattern.compile("§r(§.([^§]+))§r");
+    private static final Pattern TEAM_LINE =
+            Pattern.compile("§rTeam #(\\d{1,2}):(.*)");
+
+    private static final Pattern PLAYER_ENTRY =
+            Pattern.compile("(§r§.[^§]+)§r,?");
 
     // Ticks to keep the initial capture window open. Teams are static once the
     // game starts, so after this window the roster is frozen for the whole game.
@@ -31,7 +36,6 @@ public class EnhancedWho {
 
     BlockPos playerStartPosition = null;
     boolean shouldRenderBeacon = false;
-    boolean playerDied = false;
     private String mode = null;
     int playerTeam = -1;
 
@@ -43,26 +47,24 @@ public class EnhancedWho {
 
     @SubscribeEvent
     public void onChatReceived(ClientChatReceivedEvent event) {
+
         if (!LocationUtil.isInSkyWars()) return;
         if (!SkyWarsToolsMod.config.islandFinderEnabled) return;
         if (!LocationUtil.getCurrentLocation().getMap().isPresent()) return; // In a lobby
 
         String message = event.message.getFormattedText();
 
-        if (YOU_DIED_YOU_WON.matcher(message).matches()) {
-            playerDied = true;
-            return;
-        }
-
-        if (GAME_START.matcher(message).matches()) {
-            onGameStart();
-            return;
+        if (!isCapturingRoster) {
+            if (GAME_START.matcher(message).matches()) {
+                onGameStart();
+                return;
+            }
         }
 
         Matcher matcher = TEAM_LINE.matcher(message);
         if (!matcher.matches()) return;
 
-        WhoTeam parsedTeam = parseTeamLine(matcher);
+        WhoTeam parsedTeam = parseTeamLine(message);
 
         if (isCapturingRoster) {
             handleRosterCaptureLine(parsedTeam, event);
@@ -72,7 +74,7 @@ public class EnhancedWho {
     }
 
     private void onGameStart() {
-        playerDied = false;
+
         playerTeam = -1;
         shouldRenderBeacon = false;
         teamRoster.clear();
@@ -94,20 +96,26 @@ public class EnhancedWho {
         });
     }
 
-    private WhoTeam parseTeamLine(Matcher teamLineMatcher) {
-        int teamNumber = Integer.parseInt(teamLineMatcher.group(1));
-        String playersPart = teamLineMatcher.group(2).trim();
+    private WhoTeam parseTeamLine(String message) {
+        Matcher matcher = TEAM_LINE.matcher(message);
+        if (!matcher.matches())
+            throw new IllegalStateException(); // Should be impossible to hit due to earlier match on same messaeg
+        int teamNumber = Integer.parseInt(matcher.group(1));
 
-        Matcher playerMatcher = PLAYER_ENTRY.matcher(playersPart);
-        String clientPlayerName = Minecraft.getMinecraft().thePlayer.getName();
+        Matcher playerMatcher = PLAYER_ENTRY.matcher(message);
+        String clientPlayerName = MCName.getName();
 
         java.util.List<WhoTeam.Player> teamPlayers = new java.util.ArrayList<>();
+
         while (playerMatcher.find()) {
+            String playerNameFormatted = playerMatcher.group(1);
+            String playerName = playerMatcher.group(1).replaceAll("§.", "");
             teamPlayers.add(new WhoTeam.Player(
-                    playerMatcher.group(1), // §aPlayer1
-                    playerMatcher.group(2)  // Player1
+                    playerNameFormatted,
+                    playerName
             ));
-            if (playerMatcher.group(2).equals(clientPlayerName)) {
+
+            if (playerName.contains(clientPlayerName)) {
                 playerTeam = teamNumber;
             }
         }

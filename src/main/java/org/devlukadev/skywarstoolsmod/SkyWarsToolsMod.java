@@ -23,6 +23,7 @@ import org.devlukadev.skywarstoolsmod.features.kitselectorfix.KitSelectorFixEven
 import org.devlukadev.skywarstoolsmod.features.lastgameexp.LastGameEXPEvents;
 import org.devlukadev.skywarstoolsmod.features.sessions.SessionTracker;
 import org.devlukadev.skywarstoolsmod.features.tablevels.SkyWarsRequestCache;
+import org.devlukadev.skywarstoolsmod.features.tablevels.TabRowRenderContext;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.TimeWarpPearlTracker;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerHUD;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerManager;
@@ -95,6 +96,10 @@ public class SkyWarsToolsMod {
         AutododgeEvents autododge = new AutododgeEvents();
         LocationUtil.addListener(autododge::onLocationReceived);
         MinecraftForge.EVENT_BUS.register(autododge);
+
+        // Levels
+        LocationUtil.addListener(TabRowRenderContext::onLocationReceived);
+        MinecraftForge.EVENT_BUS.register(new TabRowRenderContext());
 
         // Enhanced Who
         MinecraftForge.EVENT_BUS.register(new EnhancedWho());

@@ -17,6 +17,11 @@ public class LocationUtil {
     }
 
     /**
+     * lastUpdate = System.currentTimeMillis(); every time a location is gotten
+     */
+    public static long lastUpdate = 0;
+
+    /**
      * Register an additional listener to be notified whenever a new
      * ClientboundLocationPacket is received, after currentLocation is updated.
      */
@@ -30,6 +35,7 @@ public class LocationUtil {
      */
     public static void onLocationReceived(ClientboundLocationPacket packet) {
         currentLocation = packet;
+        lastUpdate = System.currentTimeMillis();
         for (Consumer<ClientboundLocationPacket> listener : listeners) {
             listener.accept(packet);
         }
