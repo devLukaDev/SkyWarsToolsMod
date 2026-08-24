@@ -17,7 +17,7 @@ public class AutododgeStorage {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Type LIST_TYPE = new TypeToken<List<String>>() {}.getType();
 
-    private static final File SAVE_FILE = new File(Loader.instance().getConfigDir(), "OneConfig/config/swt-autododge.json");
+    private static final File SAVE_FILE = new File(Loader.instance().getConfigDir(), "swt/autododge-maps.json");
 
     public static void save(List<String> todos) {
         SAVE_FILE.getParentFile().mkdirs();

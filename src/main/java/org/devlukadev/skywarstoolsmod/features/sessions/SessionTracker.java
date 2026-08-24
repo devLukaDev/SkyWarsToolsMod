@@ -86,12 +86,10 @@ public class SessionTracker {
 
         }
 
-        System.out.println(message);
         Matcher headMatcher = MessagePattern.HEAD_GATHERED.matcher(message);
-        System.out.println(headMatcher);
+
         if (headMatcher.find()) {
             SessionManager.getInstance().addHead();
-            ChatLib.chat("Head tracked!");
             frequency.merge("head", 1d, Double::sum);
 
         }

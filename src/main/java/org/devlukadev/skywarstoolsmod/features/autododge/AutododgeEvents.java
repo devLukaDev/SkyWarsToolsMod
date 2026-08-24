@@ -68,11 +68,11 @@ public class AutododgeEvents {
             ChatLib.chat("&aMap &e" + map + "&a and a flagged player are on dodge list! Dodging in &e" + seconds + "&a seconds...", true);
         } else if (mapDodge) {
             ChatLib.chat("&aMap &e" + map + "&a is on dodge list! Dodging in &e" + seconds + "&a seconds...", true);
+            ChatLib.showTitle("§cDodging §6" + map, "HOLD SNEAK TO CANCEL", 10, ticks, 10);
         } else {
             ChatLib.chat("&aA flagged player is in tab! Dodging in &e" + seconds + "&a seconds...", true);
         }
         ChatLib.chat("&cHOLD SNEAK TO CANCEL DODGING!", true);
-        ChatLib.showTitle("§cDodging", "HOLD SNEAK TO CANCEL", 10, ticks, 10);
         dodgingEngaged = true;
         dodgeTicksLeft = ticks;
     }

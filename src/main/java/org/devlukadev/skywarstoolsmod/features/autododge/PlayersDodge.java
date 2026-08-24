@@ -13,7 +13,10 @@ import org.devlukadev.skywarstoolsmod.utils.fetchutils.responses.SkyWarsResponse
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+
+import static org.devlukadev.skywarstoolsmod.features.autododge.TagManager.checkForTags;
 
 public class PlayersDodge {
 
@@ -24,7 +27,6 @@ public class PlayersDodge {
         List<CompletableFuture<Boolean>> checks = new ArrayList<>();
         for (NetworkPlayerInfo p : players) {
             String originalName = p.getGameProfile().getName();
-            ChatLib.chat("Checking " + originalName);
             if (originalName.equals(MCName.getName())) continue; // Don't dodge yourself (;
 
             CompletableFuture<SkyWarsResponse> respFuture;
@@ -39,9 +41,23 @@ public class PlayersDodge {
             }
 
             checks.add(respFuture.thenApply(resp -> {
-                boolean dodge = responseDodge(resp);
+                Tag tag = TagManager.checkForTags(p.getGameProfile().getId());
+                boolean hasDoNotDodge = tag != null && tag.getReasons().contains("donotdodge");
+                boolean tagDodge =
+                        tag != null &&
+                                SkyWarsToolsMod.config.autododgeTagsEnabled &&
+                                !hasDoNotDodge;
+                boolean statsDodge = responseDodge(resp);
+                boolean dodge = tagDodge || statsDodge;
+
+                if (tag != null) {
+                    String reason = "&cTagged: " + tag.getReasons().get(0);
+                    ChatLib.chat("&e" + originalName + " &7(" + reason + "&7)" + (hasDoNotDodge ? " &8[dodge disabled]" : ""), true);
+                }
+
                 if (dodge) {
-                    ChatLib.chat("High stats detected: " + originalName);
+                    ChatLib.showTitle("§cDodging §6" + originalName, "HOLD SNEAK TO CANCEL", 10, 20, 10);
+                    ChatLib.chat("&cDodging &e" + originalName, true);
                 }
                 return dodge;
             }));
@@ -70,8 +86,31 @@ public class PlayersDodge {
     public static CompletableFuture<Boolean> checkPlayer(String playerName) {
         if (playerName.equalsIgnoreCase(MCName.getName())) return CompletableFuture.completedFuture(false);
 
+        UUID uuid = resolveOnlineUuid(playerName);
+        Tag tag = TagManager.checkForTags(uuid);
+        boolean hasDoNotDodge = tag != null && tag.getReasons().contains("donotdodge");
+        boolean tagDodge =
+                tag != null &&
+                        SkyWarsToolsMod.config.autododgeTagsEnabled &&
+                        !hasDoNotDodge;
+
+        if (tag != null) {
+            String reason = "&cTagged: " + tag.getReasons().get(0);
+            ChatLib.chat("&e" + playerName + " &7(" + reason + "&7)" + (hasDoNotDodge ? " &8[dodge disabled]" : ""), true);
+        }
+
         return SkyWarsRequestCache.getStatsAsync(playerName)
-                .thenApply(PlayersDodge::responseDodge);
+                .thenApply(resp -> tagDodge || responseDodge(resp));
+    }
+
+    private static UUID resolveOnlineUuid(String playerName) {
+        NetHandlerPlayClient nh = Minecraft.getMinecraft().thePlayer.sendQueue;
+        for (NetworkPlayerInfo p : nh.getPlayerInfoMap()) {
+            if (p.getGameProfile().getName().equalsIgnoreCase(playerName)) {
+                return p.getGameProfile().getId();
+            }
+        }
+        return null;
     }
 
 }

@@ -66,7 +66,7 @@ public final class MessagePattern {
      * Teams cages open in 10 seconds
      */
     public static final Pattern TEAMS_CAGE_TP = Pattern.compile(
-            "^§r§eCages open in: §r§c10 §r§eseconds!§r$"
+            "^§r§eCages open in: §r§c8 §r§eseconds!§r$"
     );
 
 

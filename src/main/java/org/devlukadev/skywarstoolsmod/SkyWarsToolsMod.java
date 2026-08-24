@@ -9,6 +9,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.devlukadev.skywarstoolsmod.command.SWLevel;
 import org.devlukadev.skywarstoolsmod.command.SWTCommand;
@@ -17,6 +18,7 @@ import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import net.minecraftforge.fml.common.Mod;
 import cc.polyfrost.oneconfig.utils.commands.CommandManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import org.devlukadev.skywarstoolsmod.features.autododge.TagManager;
 import org.devlukadev.skywarstoolsmod.features.enhancedwho.EnhancedWho;
 import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeEvents;
 import org.devlukadev.skywarstoolsmod.features.kitselectorfix.KitSelectorFixEvent;
@@ -77,7 +79,7 @@ public class SkyWarsToolsMod {
         CommandManager.INSTANCE.registerCommand(new SWLevel());
         MinecraftForge.EVENT_BUS.register(new ClientScheduler());
 
-        MinecraftForge.EVENT_BUS.register(this); // For Debug event below
+        MinecraftForge.EVENT_BUS.register(this); // For all @Subscribe events in this class
 
         // Nick tracker
         MinecraftForge.EVENT_BUS.register(new MCName());
@@ -96,6 +98,8 @@ public class SkyWarsToolsMod {
         AutododgeEvents autododge = new AutododgeEvents();
         LocationUtil.addListener(autododge::onLocationReceived);
         MinecraftForge.EVENT_BUS.register(autododge);
+
+        TagManager.loadData(getCacheFolder());
 
         // Levels
         LocationUtil.addListener(TabRowRenderContext::onLocationReceived);
@@ -122,6 +126,11 @@ public class SkyWarsToolsMod {
         CommandManager.INSTANCE.registerCommand(new SWTCommand());
         CommandManager.INSTANCE.registerCommand(new SWLevel());
 
+    }
+
+    @SubscribeEvent
+    public void onDisconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+        TagManager.onShutdown();
     }
 
     @SubscribeEvent

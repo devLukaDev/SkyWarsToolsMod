@@ -4,14 +4,19 @@ import cc.polyfrost.oneconfig.utils.commands.annotations.*;
 import cc.polyfrost.oneconfig.utils.gui.GuiUtils;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.command.swt.StatsPrint;
 import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeScreen;
+import org.devlukadev.skywarstoolsmod.features.autododge.TagManager;
 import org.devlukadev.skywarstoolsmod.features.sessions.SessionManager;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.Fetch;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.responses.NamesResponse;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.responses.OverallResponse;
+
+import java.util.UUID;
 
 @Command(value = "swt", description = "SkyWarsTools command", aliases = {"skywarstools"})
 public class SWTCommand {
@@ -116,5 +121,36 @@ public class SWTCommand {
         }
     }
 
+    @SubCommand(description = "Tag a player")
+    private void tag(GameProfile playerName, @Greedy String reasons) {
+
+        UUID uuid = playerName.getId();
+        if (uuid == null) {
+            ChatLib.chat("&cSomething went wrong.", true);
+            return;
+        }
+        if (reasons == null) reasons = "";
+        boolean created = TagManager.addTag(uuid, reasons);
+        if (created) {
+            ChatLib.chat("&aTagged &e" + playerName.getName() + "&a with reasons: &e" + reasons, true);
+        } else {
+            ChatLib.chat("&aAdded reason to existing tag for &e" + playerName.getName() + "&a: &e" + reasons, true);
+        }
+    }
+
+    @SubCommand(description = "Remove all tags from a player")
+    private void untag(GameProfile playerName) {
+
+        UUID uuid = playerName.getId();
+        if (uuid == null) {
+            ChatLib.chat("&cSomething went wrong.", true);
+            return;
+        }
+
+        boolean removed = TagManager.removeTag(uuid);
+        if (removed) ChatLib.chat("&aRemoved tags for player &e" + playerName.getName(), true);
+        if (!removed) ChatLib.chat("&cSomething went wrong.", true);
+
+    }
 
 }

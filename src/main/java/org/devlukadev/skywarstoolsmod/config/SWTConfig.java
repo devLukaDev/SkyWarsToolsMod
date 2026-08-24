@@ -118,8 +118,8 @@ public class SWTConfig extends Config {
     };
 
     @Switch(
-            name = "Dodge Tagged Players",
-            description = "Automatically dodge players that you've tagged as such",
+            name = "Dodge High-stat Players",
+            description = "Automatically dodge players with high stats",
             category = "Autododge",
             subcategory = "Player dodge"
     )
@@ -142,6 +142,21 @@ public class SWTConfig extends Config {
             category = "Autododge",
             subcategory = "Player dodge")
     public float autododgePlayersWL = 1.5F;
+
+    @Switch(
+            name = "Dodge Tagged Players",
+            description = "Automatically dodge players that you've tagged",
+            category = "Autododge",
+            subcategory = "Player dodge"
+    )
+    public boolean autododgeTagsEnabled = true;
+
+    @Text(name = "Exception tag",
+            category = "Autododge",
+            subcategory = "Player dodge",
+            description = "Players with this tag will not be dodged",
+            size = 2)
+    public String autododgeTagsExceptionText = "donotdodge";
 
     @EnglishWarningOptionAnnotation(category = "Autododge")
     public static boolean skywarsEnglishWarningb = true;
