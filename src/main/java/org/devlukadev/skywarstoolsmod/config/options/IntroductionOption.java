@@ -44,7 +44,7 @@ public class IntroductionOption extends BasicOption {
         drawLine(vg, tx, "SkyWars Utility mod by devLukaDev - v@VER@", 12, -1);
         drawLine(vg, tx, "", 20, -1);
         drawLine(vg, tx, "A mod bringing essentials to your SkyWars playing experience! Such as:", 14, -1);
-        drawLine(vg, tx, "- Automatically dodge maps", 14, -1);
+        drawLine(vg, tx, "- Automatically dodge maps and players", 14, -1);
         drawLine(vg, tx, "- HyStats-esque session tracking", 14, -1);
         drawLine(vg, tx, "- Tablist player information", 14, -1);
         drawLine(vg, tx, "- UI enhancements for certain kits", 14, -1);
@@ -57,7 +57,7 @@ public class IntroductionOption extends BasicOption {
         drawLine(vg, tx, "Credits", 12, -1);
         drawLine(vg, tx, "Main developer: devLukaDev", 12, -1);
         drawLine(vg, tx, "Attributions:", 12, -1);
-        drawLine(vg, tx, "Alexdoru - Updater, Nick-detect", 12, -1);
+        drawLine(vg, tx, "Alexdoru - Updater, Nick-detect, Tagging", 12, -1);
         drawLine(vg, tx, "Yedelo - Launch Tweaker", 12, -1);
 
         NanoVGHelper.INSTANCE.drawImage(vg, logo, x + 700, y + 10, 300, 300);

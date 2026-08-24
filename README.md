@@ -1,22 +1,22 @@
-# OneConfigExampleMod
+# SkyWarsToolsMod
 
-![Powered by OneConfig](https://polyfrost.org/media/branding/badges/badge_1.svg)
-![Compact Powered by OneConfig](https://polyfrost.org/media/branding/badges/badge_2.svg)
-![Minimal Powered by OneConfig](https://polyfrost.org/media/branding/badges/badge_3.svg)
-![Minimal Compact Powered by OneConfig](https://polyfrost.org/media/branding/badges/badge_4.svg)
+SkyWars Utility mod by devLukaDev
 
-Example mod implementing OneConfig.
+A mod bringing essentials to your SkyWars playing experience! Such as:
+- Automatically dodge maps and players
+- HyStats-esque session tracking
+- Tablist player information
+- UI enhancements for certain kits
+- Better /who
+- Various small fixes!
 
-## How to use
+Have questions/comments or found a bug?
+Go to SkyWarsTools.com and join the discord.
 
-- Copy the template either by using GitHub's "Use this template" feature or downloading the repo manually.
-- **Remove the license named "LICENSE-TEMPLATE" and choose a new one.**
-- Refactor the template (specifically, the modid, version and name in the gradle.properties and most of the class names)
-  to a different name.
-- Have fun modding! :D
+## Credits
 
-## Need to update to a newer commit of this template?
+**Main developer:** devLukaDev
 
-Check out these update guides:
-- [Updating to commit `fd8e095`](update-to-fd8e095.md) (most recent update)
-- [Updating to commit `301a6ca`](update-to-301a6ca.md)
+**Attributions:**
+- Alexdoru - Updater, Nick-detect, Tagging
+- Yedelo - Launch Tweaker
