@@ -18,7 +18,7 @@ import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import net.minecraftforge.fml.common.Mod;
 import cc.polyfrost.oneconfig.utils.commands.CommandManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import org.devlukadev.skywarstoolsmod.features.autododge.TagManager;
+import org.devlukadev.skywarstoolsmod.features.tags.TagManager;
 import org.devlukadev.skywarstoolsmod.features.enhancedwho.EnhancedWho;
 import org.devlukadev.skywarstoolsmod.features.autododge.AutododgeEvents;
 import org.devlukadev.skywarstoolsmod.features.kitselectorfix.KitSelectorFixEvent;
@@ -27,7 +27,6 @@ import org.devlukadev.skywarstoolsmod.features.sessions.SessionTracker;
 import org.devlukadev.skywarstoolsmod.features.tablevels.SkyWarsRequestCache;
 import org.devlukadev.skywarstoolsmod.features.tablevels.TabRowRenderContext;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.TimeWarpPearlTracker;
-import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerHUD;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerManager;
 import org.devlukadev.skywarstoolsmod.updater.SWTUpdater;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
@@ -112,7 +111,7 @@ public class SkyWarsToolsMod {
         MinecraftForge.EVENT_BUS.register(new KitSelectorFixEvent());
 
         // Item Cooldown hud
-        EventManager.INSTANCE.register(new UsageTimerHUD());
+//        EventManager.INSTANCE.register(new UsageTimerHUD());
         MinecraftForge.EVENT_BUS.register(new UsageTimerManager());
         MinecraftForge.EVENT_BUS.register(new TimeWarpPearlTracker());
 

@@ -5,6 +5,8 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.features.tablevels.SkyWarsRequestCache;
+import org.devlukadev.skywarstoolsmod.features.tags.Tag;
+import org.devlukadev.skywarstoolsmod.features.tags.TagManager;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 import org.devlukadev.skywarstoolsmod.utils.MCName;
 import org.devlukadev.skywarstoolsmod.utils.NickDetector;
@@ -15,8 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
-import static org.devlukadev.skywarstoolsmod.features.autododge.TagManager.checkForTags;
 
 public class PlayersDodge {
 
@@ -88,7 +88,7 @@ public class PlayersDodge {
 
         UUID uuid = resolveOnlineUuid(playerName);
         Tag tag = TagManager.checkForTags(uuid);
-        boolean hasDoNotDodge = tag != null && tag.getReasons().contains("donotdodge");
+        boolean hasDoNotDodge = tag != null && tag.getReasons().contains(SkyWarsToolsMod.config.autododgeTagsExceptionText);
         boolean tagDodge =
                 tag != null &&
                         SkyWarsToolsMod.config.autododgeTagsEnabled &&

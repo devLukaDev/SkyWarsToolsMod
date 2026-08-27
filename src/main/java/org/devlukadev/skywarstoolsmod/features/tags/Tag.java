@@ -1,4 +1,4 @@
-package org.devlukadev.skywarstoolsmod.features.autododge;
+package org.devlukadev.skywarstoolsmod.features.tags;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +24,10 @@ public class Tag {
     public boolean addReason(String reason) {
         if (reasons.contains(reason)) return false;
         reasons.add(reason);
+
+        // Send tag to database
+
+
         return true;
     }
 

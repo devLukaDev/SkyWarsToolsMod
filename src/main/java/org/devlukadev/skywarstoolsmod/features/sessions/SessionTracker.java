@@ -2,6 +2,10 @@ package org.devlukadev.skywarstoolsmod.features.sessions;
 
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatStyle;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -120,16 +124,32 @@ public class SessionTracker {
         if (!LocationUtil.isInSkyWars()) return;
 
         if (SessionManager.getInstance().getCurrentStats() == null) {
-            ChatLib.chat("&cWARNING: &eYou have no session started yet. Run &b/swt sessions reset");
+            ChatComponentText message = new ChatComponentText("§cWARNING: §eYou have no session started yet. Click here to run §b/swt sessions reset");
+
+            ChatStyle style = new ChatStyle();
+            style.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/swt sessions reset"));
+            style.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText("§bClick to reset session")));
+            message.setChatStyle(style);
+
+            Minecraft.getMinecraft().thePlayer.addChatMessage(message);
             Minecraft.getMinecraft().thePlayer.playSound("mob.villager.no", 1F, 1F);
             return;
         }
         if (System.currentTimeMillis() - SessionManager.getInstance().getData().sessionStartMillis >= 1000 * 60 * 60 * 4 && !sentReminder) {
-            ChatLib.chat("&cWARNING: &eYour session is more than 4 hours old. Want to reset? Run &b/swt sessions reset");
+            ChatComponentText message = new ChatComponentText("§cWARNING: §eYour session is more than 4 hours old. Click here to reset §b/swt sessions reset");
+
+            ChatStyle style = new ChatStyle();
+            style.setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/swt sessions reset"));
+            style.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText("§bClick to reset session")));
+            message.setChatStyle(style);
+
+            Minecraft.getMinecraft().thePlayer.addChatMessage(message);
             Minecraft.getMinecraft().thePlayer.playSound("mob.villager.no", 1F, 1F);
             sentReminder = true;
             return;
         }
+        ;
+
 
         // Cases for when we receive this packet
         if (gameStarted) {
@@ -150,14 +170,14 @@ public class SessionTracker {
 
         }
 
-        if (!frequency.isEmpty()) {
-            ChatLib.chat("Previous game stats:");
-            frequency.forEach((result, count) ->
-                    ChatLib.chat(result + ": " + count));
-            ChatLib.chat("Playtime counted: " + playTimeSeconds);
-            ChatLib.chat("Not correct? Report this with replay file please!");
-
-        }
+//        if (!frequency.isEmpty()) {
+//            ChatLib.chat("Previous game stats:");
+//            frequency.forEach((result, count) ->
+//                    ChatLib.chat(result + ": " + count));
+//            ChatLib.chat("Playtime counted: " + playTimeSeconds);
+//            ChatLib.chat("Not correct? Report this with replay file please!");
+//
+//        }
 
         //Reset when in new server
         frequency = new HashMap<>();

@@ -1,8 +1,9 @@
-package org.devlukadev.skywarstoolsmod.features.autododge;
+package org.devlukadev.skywarstoolsmod.features.tags;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -81,6 +82,8 @@ public final class TagManager {
             existing.addReason(reason);
             return existing;
         });
+        if (SkyWarsToolsMod.config.autododgeTagsDB)
+        TagReporter.reportTag(uuid, reason);
         dirty.set(true);
         return created[0];
     }

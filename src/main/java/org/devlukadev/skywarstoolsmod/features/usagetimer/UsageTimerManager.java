@@ -53,7 +53,7 @@ public class UsageTimerManager {
     @SubscribeEvent
     public void onGameStart(ClientChatReceivedEvent event) {
         if (!LocationUtil.isInSkyWars()) return;
-        if (!SkyWarsToolsMod.config.cooldownsHUDEnabled) return;
+//        if (!SkyWarsToolsMod.config.cooldownsHUDEnabled) return;
 
         String message = event.message.getFormattedText();
 
@@ -104,7 +104,7 @@ public class UsageTimerManager {
     @SubscribeEvent
     public void onInteract(PlayerInteractEvent event) {
         if (!LocationUtil.isInSkyWars()) return;
-        if (!SkyWarsToolsMod.config.cooldownsHUDEnabled) return;
+//        if (!SkyWarsToolsMod.config.cooldownsHUDEnabled) return;
         if (event.entityPlayer != Minecraft.getMinecraft().thePlayer) return;
         if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_AIR
                 && event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return;
