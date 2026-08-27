@@ -111,7 +111,6 @@ public class SkyWarsToolsMod {
         MinecraftForge.EVENT_BUS.register(new KitSelectorFixEvent());
 
         // Item Cooldown hud
-//        EventManager.INSTANCE.register(new UsageTimerHUD());
         MinecraftForge.EVENT_BUS.register(new UsageTimerManager());
         MinecraftForge.EVENT_BUS.register(new TimeWarpPearlTracker());
 

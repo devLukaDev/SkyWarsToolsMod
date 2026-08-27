@@ -3,34 +3,30 @@ package org.devlukadev.skywarstoolsmod.features.usagetimer.huds;
 import cc.polyfrost.oneconfig.config.core.OneColor;
 import cc.polyfrost.oneconfig.hud.BasicHud;
 import cc.polyfrost.oneconfig.libs.universal.UMatrixStack;
-import cc.polyfrost.oneconfig.renderer.NanoVGHelper;
 import cc.polyfrost.oneconfig.renderer.asset.Image;
-import cc.polyfrost.oneconfig.renderer.font.Fonts;
-import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerInventory;
-import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerManager;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.lwjgl.opengl.Display;
 
 import static org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerHUD.drawIconWithTimer;
 
-public class CorruptedHud extends BasicHud {
+public class CryoEggHud extends BasicHud {
 
     // cache images once instead of re-instantiating every frame
-    private static Image CORRUPTED = new Image("/corrupted.png", 32);
+    private static Image CRYO = new Image("/egg.png", 32);
 
-    public CorruptedHud() {
-        super(true, (float) (Display.getWidth() / 2) - 15, 20, 1, false, false, 0,
+    public CryoEggHud() {
+        super(true, (float) (Display.getWidth() / 2) + 40, 20, 1, false, false, 0,
                 0, 0, new OneColor(0, 0, 0, 0), false, 0, new OneColor(0, 0, 0, 0));
     }
 
     @Override
     protected void draw(UMatrixStack matrices, float x, float y, float scale, boolean example) {
-        if (example) drawIconWithTimer(CORRUPTED, x, y, scale, "corrupted_pearl");
+        if (example) drawIconWithTimer(CRYO, x, y, scale, "cyro_bridge_egg");
         if (!LocationUtil.isInSkyWars()) return;
 
-        if (UsageTimerInventory.hasCorruptedPearl) {
-            drawIconWithTimer(CORRUPTED, x, y, scale, "corrupted_pearl");
+        if (UsageTimerInventory.hasCryoBridgeEgg) {
+            drawIconWithTimer(CRYO, x, y, scale, "cyro_bridge_egg");
         }
     }
 

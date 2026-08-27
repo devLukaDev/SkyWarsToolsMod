@@ -21,6 +21,9 @@ import org.devlukadev.skywarstoolsmod.features.sessions.SessionHUD;
 import org.devlukadev.skywarstoolsmod.features.sessions.SessionManager;
 import org.devlukadev.skywarstoolsmod.config.options.TabPreviewOption;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.huds.CorruptedHud;
+import org.devlukadev.skywarstoolsmod.features.usagetimer.huds.CryoEggHud;
+import org.devlukadev.skywarstoolsmod.features.usagetimer.huds.EchoHud;
+import org.devlukadev.skywarstoolsmod.features.usagetimer.huds.EndlordHud;
 
 import java.lang.reflect.Field;
 
@@ -274,33 +277,29 @@ public class SWTConfig extends Config {
 
 
     // === Item Cooldowns ===
-//    @Switch(
-//            name = "Enable Item Cooldowns HUD",
-//            description = "Enables a HUD around the crosshair that shows relevant information on item cooldowns",
-//            category = "CooldownsHUD"
-//    )
-//    public boolean cooldownsHUDEnabled = true;
-//
-//    @Slider(
-//            name = "Icon size",
-//            category = "CooldownsHUD",
-//            min = 1,
-//            max = 200
-//    )
-//    public int cooldownsHUDSize = 50;
-//
-//    @Slider(
-//            name = "Distance from crosshair",
-//            category = "CooldownsHUD",
-//            min = 1,
-//            max = 200
-//    )
-//    public int cooldownsHUDDistance = 50;
     @HUD(
             category = "Cooldowns",
-            name ="Corrupted Pearl HUD"
+            name = "Corrupted Pearl HUD"
     )
     public CorruptedHud corruptedHud = new CorruptedHud();
+
+    @HUD(
+            category = "Cooldowns",
+            name = "Time Warp Pearl HUD"
+    )
+    public EndlordHud endlordHud = new EndlordHud();
+
+    @HUD(
+            category = "Cooldowns",
+            name = "Echo Clock HUD"
+    )
+    public EchoHud echoHud = new EchoHud();
+
+    @HUD(
+            category = "Cooldowns",
+            name = "Cryo Egg HUD"
+    )
+    public CryoEggHud cryoEggHud = new CryoEggHud();
 
 
     // ==== Fixes ====
