@@ -26,6 +26,7 @@ import org.devlukadev.skywarstoolsmod.features.lastgameexp.LastGameEXPEvents;
 import org.devlukadev.skywarstoolsmod.features.sessions.SessionTracker;
 import org.devlukadev.skywarstoolsmod.features.tablevels.SkyWarsRequestCache;
 import org.devlukadev.skywarstoolsmod.features.tablevels.TabRowRenderContext;
+import org.devlukadev.skywarstoolsmod.features.tags.WDREvent;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.TimeWarpPearlTracker;
 import org.devlukadev.skywarstoolsmod.features.usagetimer.UsageTimerManager;
 import org.devlukadev.skywarstoolsmod.updater.SWTUpdater;
@@ -99,6 +100,7 @@ public class SkyWarsToolsMod {
         MinecraftForge.EVENT_BUS.register(autododge);
 
         TagManager.loadData(getCacheFolder());
+        EventManager.INSTANCE.register(new WDREvent()); // We use polyfrost eventmanager for this chatSend event
 
         // Levels
         LocationUtil.addListener(TabRowRenderContext::onLocationReceived);
@@ -123,6 +125,7 @@ public class SkyWarsToolsMod {
         // Commands
         CommandManager.INSTANCE.registerCommand(new SWTCommand());
         CommandManager.INSTANCE.registerCommand(new SWLevel());
+
 
     }
 

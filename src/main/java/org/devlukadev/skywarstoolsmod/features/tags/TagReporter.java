@@ -3,6 +3,7 @@ package org.devlukadev.skywarstoolsmod.features.tags;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
+import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,7 +14,7 @@ import java.security.SecureRandom;
 import java.util.UUID;
 
 public class TagReporter {
-    private static final String API_URL = "http://localhost:3001/api/tags/";
+    private static final String API_URL = SkyWarsToolsMod.SWT_API + "/tags/";
 
     public static void reportTag(UUID taggedPlayerUUID, String tagText) {
         System.out.println("Adding report to global DB");
