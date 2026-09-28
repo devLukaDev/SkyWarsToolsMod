@@ -68,6 +68,8 @@ public class TabStringConstructor {
                 return translateColorCodes(ratio(response, "kills", "deaths", "kd"));
             case "%kills%":
                 return translateColorCodes(stat(response, "kills"));
+            case "%heads%":
+                return translateColorCodes(stat(response, "heads"));
             case "%wins%":
                 return translateColorCodes(stat(response, "wins"));
             case "%deaths%":
@@ -195,6 +197,8 @@ public class TabStringConstructor {
                 return response.stats.kills;
             case "deaths":
                 return response.stats.deaths;
+            case "heads":
+                return response.stats.heads;
             default:
                 throw new IllegalArgumentException("Unknown stat field: " + field);
         }

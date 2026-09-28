@@ -16,6 +16,6 @@ import cc.polyfrost.oneconfig.utils.commands.annotations.Main;
 public class SWLevel {
     @Main
     private void handle(GameProfile player) {
-        ClientCommandHandler.instance.executeCommand(Minecraft.getMinecraft().thePlayer, "/swt stats overall " + player.getName());
+        ClientCommandHandler.instance.executeCommand(Minecraft.getMinecraft().thePlayer, "/swt stats " + player.getName());
     }
 }

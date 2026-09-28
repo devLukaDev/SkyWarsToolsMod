@@ -18,10 +18,10 @@ public class CommandsPage extends Page {
             new CommandEntry("/swt sessions sync", "Re-syncs session stats against Hypixel API"),
             new CommandEntry("/swt sessions reset", "Resets the current session and starts a new one"),
             new CommandEntry("/swt autododge", "Opens the Autododge screen"),
-            new CommandEntry("/swt stats overall " + "<Player>", "Get overall stats"),
+            new CommandEntry("/swt stats " + "<Player>", "Get overall stats"),
             new CommandEntry("/swlevel " + "<Player>", "Shorthand for /swt stats overall"),
-            new CommandEntry("/swt stats names " + "<Player>", "Fetches past usernames of the player"),
-            new CommandEntry("/swt stats mining " + "<Player>", "Fetches mining risk of the player"),
+            new CommandEntry("/swt names " + "<Player>", "Fetches past usernames of the player"),
+            new CommandEntry("/swt mining " + "<Player>", "Fetches mining risk of the player"),
     };
 
     private static final int ROW_HEIGHT = 32;

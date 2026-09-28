@@ -51,15 +51,14 @@ public class AutododgeEvents {
             startDodge(map, true, false, 100); // 5 seconds
         }
 
-        if (SkyWarsToolsMod.config.autododgePlayersEnabled) {
-            ClientScheduler.schedule(1, () -> {
-                PlayersDodge.shouldDodgePlayerInTab().thenAccept(playerDodge -> {
-                    if (playerDodge && !dodgingEngaged) {
-                        startDodge(map, mapDodge, true, 99);
-                    }
-                });
+        ClientScheduler.schedule(1, () -> {
+            PlayersDodge.shouldDodgePlayerInTab().thenAccept(playerDodge -> {
+                if (playerDodge && !dodgingEngaged) {
+                    startDodge(map, mapDodge, true, 99);
+                }
             });
-        }
+        });
+
     }
 
     private void startDodge(String map, boolean mapDodge, boolean playerDodge, int ticks) {

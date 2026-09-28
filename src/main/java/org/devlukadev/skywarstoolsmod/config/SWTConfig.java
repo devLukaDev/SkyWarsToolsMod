@@ -168,7 +168,7 @@ public class SWTConfig extends Config {
             category = "Autododge",
             subcategory = "Player dodge"
     )
-    public static boolean autododgeTagsDB = true;
+    public boolean autododgeTagsDB = true;
 
     @EnglishWarningOptionAnnotation(category = "Autododge")
     public static boolean skywarsEnglishWarningb = true;
@@ -315,6 +315,12 @@ public class SWTConfig extends Config {
             category = "Fixes"
     )
     public boolean etableFix = true;
+    @Switch(
+            name = "Debug mode",
+            description = "Do not enable (;",
+            category = "Fixes"
+    )
+    public boolean debugMode = false;
 
 
     // Non-editable properties

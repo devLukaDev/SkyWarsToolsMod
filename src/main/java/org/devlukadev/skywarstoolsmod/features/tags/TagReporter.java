@@ -17,7 +17,10 @@ public class TagReporter {
     private static final String API_URL = SkyWarsToolsMod.SWT_API + "/tags/";
 
     public static void reportTag(UUID taggedPlayerUUID, String tagText) {
-        System.out.println("Adding report to global DB");
+
+        if (!SkyWarsToolsMod.config.autododgeTagsDB) return;
+        if (tagText.equalsIgnoreCase(SkyWarsToolsMod.config.autododgeTagsExceptionText)) return;
+
         new Thread(() -> {
             try {
                 Minecraft mc = Minecraft.getMinecraft();

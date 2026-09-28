@@ -41,19 +41,18 @@ public class PlayersDodge {
             }
 
             checks.add(respFuture.thenApply(resp -> {
+
                 Tag tag = TagManager.checkForTags(p.getGameProfile().getId());
-                boolean hasDoNotDodge = tag != null && tag.getReasons().contains("donotdodge");
+                if (tag == null) return false;
+
+                boolean hasDoNotDodge = tag.getReasons().contains("donotdodge");
                 boolean tagDodge =
-                        tag != null &&
-                                SkyWarsToolsMod.config.autododgeTagsEnabled &&
-                                !hasDoNotDodge;
+                        SkyWarsToolsMod.config.autododgeTagsEnabled && !hasDoNotDodge;
                 boolean statsDodge = responseDodge(resp);
                 boolean dodge = tagDodge || statsDodge;
 
-                if (tag != null) {
-                    String reason = "&cTagged: " + tag.getReasons().get(0);
-                    ChatLib.chat("&e" + originalName + " &7(" + reason + "&7)" + (hasDoNotDodge ? " &8[dodge disabled]" : ""), true);
-                }
+                ChatLib.chat("&e" + originalName + " &7(" + tag.getReasons() + "&7)" +
+                        (hasDoNotDodge ? " &8[dodge disabled]" : ""), true);
 
                 if (dodge) {
                     ChatLib.showTitle("§cDodging §6" + originalName, "HOLD SNEAK TO CANCEL", 10, 20, 10);
@@ -70,6 +69,8 @@ public class PlayersDodge {
 
     private static boolean responseDodge(SkyWarsResponse resp) {
         if (resp == null || resp.stats == null) return false;
+        if (!SkyWarsToolsMod.config.autododgePlayersEnabled) return false;
+
         double thresholdKD = SkyWarsToolsMod.config.autododgePlayersKD;
         double thresholdWL = SkyWarsToolsMod.config.autododgePlayersWL;
         double KD = ratio(resp.stats.kills, resp.stats.deaths);

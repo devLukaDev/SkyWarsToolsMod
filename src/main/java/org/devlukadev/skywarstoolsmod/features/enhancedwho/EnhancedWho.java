@@ -94,6 +94,12 @@ public class EnhancedWho {
         ClientScheduler.schedule(CAPTURE_WINDOW_TICKS, () -> {
             isCapturingRoster = false;
         });
+
+        if (SkyWarsToolsMod.config.islandFinderAutoWho) {
+            ClientScheduler.schedule(CAPTURE_WINDOW_TICKS, () -> {
+                Minecraft.getMinecraft().thePlayer.sendChatMessage("/who");
+            });
+        }
     }
 
     private WhoTeam parseTeamLine(String message) {
@@ -127,7 +133,7 @@ public class EnhancedWho {
     // Always cancel — the player shouldn't see our auto-triggered /who spam.
     private void handleRosterCaptureLine(WhoTeam parsedTeam, ClientChatReceivedEvent event) {
         teamRoster.put(parsedTeam.getTeamNumber(), parsedTeam);
-        if (!SkyWarsToolsMod.config.islandFinderAutoWho) event.setCanceled(true);
+        event.setCanceled(true);
     }
 
     // Outside the capture window: this is a /who the player triggered themselves later

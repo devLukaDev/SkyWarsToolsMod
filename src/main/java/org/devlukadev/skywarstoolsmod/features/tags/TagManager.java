@@ -83,8 +83,8 @@ public final class TagManager {
             existing.addReason(reason);
             return existing;
         });
-        if (SWTConfig.autododgeTagsDB)
-            TagReporter.reportTag(uuid, reason);
+
+        TagReporter.reportTag(uuid, reason);
 
         dirty.set(true);
         return created[0];

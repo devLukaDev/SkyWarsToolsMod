@@ -79,7 +79,7 @@ public class StatsPrint {
         String bbSeverity = blocksBrokenRatio > 0.1 ? "§c(High Risk)" : blocksBrokenRatio > 0.05 ? "§e(Medium Risk)" : "§a(Low Risk)";
         ChatLib.chat("§eBlocks Broken Ratio: §b" + String.format("%.2f", blocksBrokenRatio) + " " + bbSeverity, false);
 
-        String kwrSeverity = killWinRatio > 6 ? "§c(High Risk)" : killWinRatio > 5.5 ? "§e(Medium Risk)" : "§a(Low Risk)";
+        String kwrSeverity = killWinRatio > 6 ? "§a(Low Risk)" : killWinRatio > 5.5 ? "§e(Medium Risk)" : "§c(High Risk)";
         ChatLib.chat("§eKill/Win Ratio: §b" + String.format("%.2f", killWinRatio) + " " + kwrSeverity, false);
 
         String sprSeverity = survivedPlayersRatio > 5 ? "§c(High Risk)" : survivedPlayersRatio > 4 ? "§e(Medium Risk)" : "§a(Low Risk)";

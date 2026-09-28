@@ -95,6 +95,7 @@ public class SWTCommand {
 
     @SubCommand(description = "Fetches mining risk of the player")
     private void mining(GameProfile player) {
+
         String url = SkyWarsToolsMod.SWT_API + "/overall?player=" + player.getName();
         System.out.println("fetching " + url);
         Fetch.getJsonAsync(url, OverallResponse.class)

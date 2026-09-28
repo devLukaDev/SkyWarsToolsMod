@@ -79,6 +79,7 @@ public class TabPreviewOption extends BasicOption {
         text = text.replace("%wl%", "0.75");
         text = text.replace("%kd%", "2.10");
         text = text.replace("%kills%", "12000");
+        text = text.replace("%heads%", "2000");
         text = text.replace("%wins%", "5000");
         text = text.replace("%deaths%", "1600");
         text = text.replace("%losses%", "1500");
