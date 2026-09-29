@@ -85,23 +85,36 @@ public class PlayersDodge {
     }
 
     public static CompletableFuture<Boolean> checkPlayer(String playerName) {
-        if (playerName.equalsIgnoreCase(MCName.getName())) return CompletableFuture.completedFuture(false);
-
-        UUID uuid = resolveOnlineUuid(playerName);
-        Tag tag = TagManager.checkForTags(uuid);
-        boolean hasDoNotDodge = tag != null && tag.getReasons().contains(SkyWarsToolsMod.config.autododgeTagsExceptionText);
-        boolean tagDodge =
-                tag != null &&
-                        SkyWarsToolsMod.config.autododgeTagsEnabled &&
-                        !hasDoNotDodge;
-
-        if (tag != null) {
-            String reason = "&cTagged: " + tag.getReasons().get(0);
-            ChatLib.chat("&e" + playerName + " &7(" + reason + "&7)" + (hasDoNotDodge ? " &8[dodge disabled]" : ""), true);
+//        ChatLib.chat("check player");
+        if (playerName.equalsIgnoreCase(MCName.getName())) { // Do not dodge yourself
+            return CompletableFuture.completedFuture(false);
         }
 
+        Tag tag = TagManager.checkForTags(resolveOnlineUuid(playerName));
+        boolean dodgeExempt = isDodgeExempt(tag);
+
+        if (tag != null) {
+            announceTag(playerName, tag, dodgeExempt);
+        }
+
+        boolean dodgeForTag = tag != null
+                && SkyWarsToolsMod.config.autododgeTagsEnabled
+                && !dodgeExempt;
+
         return SkyWarsRequestCache.getStatsAsync(playerName)
-                .thenApply(resp -> tagDodge || responseDodge(resp));
+                .thenApply(resp -> dodgeForTag || responseDodge(resp));
+    }
+
+    private static boolean isDodgeExempt(Tag tag) {
+        return tag != null
+                && tag.getReasons().contains(SkyWarsToolsMod.config.autododgeTagsExceptionText);
+    }
+
+    private static void announceTag(String playerName, Tag tag, boolean dodgeExempt) {
+        String reason = "&cTagged: " + tag.getReasons().get(0);
+        String suffix = dodgeExempt ? " &8[dodge disabled]" : "";
+        ChatLib.chat("&e" + playerName + " &7(" + reason + "&7)" + suffix, true);
+
     }
 
     private static UUID resolveOnlineUuid(String playerName) {

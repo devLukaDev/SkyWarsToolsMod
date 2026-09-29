@@ -1,5 +1,6 @@
 package org.devlukadev.skywarstoolsmod.features.enhancedwho;
 
+import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
@@ -211,5 +212,14 @@ public class EnhancedWho {
 
         RenderUtils.renderBeaconBeam(playerStartPosition.getX() - px, 0, playerStartPosition.getZ() - pz,
                 0x023431, 1.0f, event.partialTicks);
+    }
+
+    // Static because called elsewhere by hypixel mod api handler
+    public void onLocationReceived(ClientboundLocationPacket packet) {
+        if (!SkyWarsToolsMod.config.islandFinderEnabled) return;
+        if (!SkyWarsToolsMod.config.islandFinderBeacon) return;
+
+        shouldRenderBeacon = false;
+
     }
 }

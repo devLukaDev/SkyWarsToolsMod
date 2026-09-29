@@ -2,6 +2,8 @@ package org.devlukadev.skywarstoolsmod.features.tablevels;
 
 import net.minecraft.client.gui.FontRenderer;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
+import org.devlukadev.skywarstoolsmod.features.tags.Tag;
+import org.devlukadev.skywarstoolsmod.features.tags.TagManager;
 import org.devlukadev.skywarstoolsmod.utils.TextAlignUtil;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.responses.SkyWarsResponse;
 
@@ -118,12 +120,15 @@ public class TabStringConstructor {
     /**
      * Returns the ordered, resolved-but-unpadded pieces for one player. Used both for width scanning and final build.
      */
-    public static List<String> resolveSegments(SkyWarsResponse response, String originalName, boolean confirmedNicked) {
+    public static List<String> resolveSegments(SkyWarsResponse response, String originalName, boolean confirmedNicked, boolean tagged) {
         String format = SkyWarsToolsMod.config.levelsText;
         if (format == null || format.isEmpty()) {
             return Collections.singletonList(originalName);
         }
         List<String> pieces = new ArrayList<>();
+
+        pieces.add(tagged ? "⚠" : "");
+
         for (String part : template(format)) {
             pieces.add(isToken(part)
                     ? resolveToken(part, response, originalName, confirmedNicked)

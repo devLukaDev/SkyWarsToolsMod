@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
+import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.MCName;
 import org.devlukadev.skywarstoolsmod.utils.scheduler.ClientScheduler;
 
@@ -19,6 +20,8 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.devlukadev.skywarstoolsmod.utils.MessagePattern.JOIN_PATTERN;
 
 public class AutododgeEvents {
 
@@ -29,6 +32,7 @@ public class AutododgeEvents {
 
     // Static because called elsewhere by hypixel mod api handler
     public void onLocationReceived(ClientboundLocationPacket packet) {
+
         if (!SkyWarsToolsMod.config.autododgeEnabled) return;
         // We have switched locations since a dodge, either into a new map or lobby
         if (dodgingEngaged) {
@@ -100,7 +104,7 @@ public class AutododgeEvents {
                 && Minecraft.getMinecraft().thePlayer != null
                 && Minecraft.getMinecraft().thePlayer.isSneaking()
                 && dodgeTicksLeft <= 90) {
-            System.out.println("Cancelled here");
+//            System.out.println("Cancelled here");
             cancelDodge();
             ChatLib.chat("&cDodging cancelled!", true);
 
@@ -124,6 +128,7 @@ public class AutododgeEvents {
     @SubscribeEvent
     public void onChatReceived(ClientChatReceivedEvent event) {
         if (!SkyWarsToolsMod.config.autododgeEnabled) return;
+        if (!LocationUtil.isInSkyWars()) return;
         String msg = event.message.getFormattedText();
 
         final String GAME_STARTS_SOON = "§r§e§r§eThe game starts in §r§a§r§c1§r§e second!§r§e§r";
@@ -147,7 +152,6 @@ public class AutododgeEvents {
             }
         } else if (m.find()) {
             String player = m.group(1); // "SkyWarsTools"
-            if (!SkyWarsToolsMod.config.autododgePlayersEnabled) return;
             PlayersDodge.checkPlayer(player).thenAccept(shouldDodge -> {
                 if (shouldDodge && !dodgingEngaged) {
                     startDodge(null, false, true, 100);

@@ -107,7 +107,9 @@ public class SkyWarsToolsMod {
         MinecraftForge.EVENT_BUS.register(new TabRowRenderContext());
 
         // Enhanced Who
-        MinecraftForge.EVENT_BUS.register(new EnhancedWho());
+        EnhancedWho enhancedWho = new EnhancedWho();
+        MinecraftForge.EVENT_BUS.register(enhancedWho);
+        LocationUtil.addListener(enhancedWho::onLocationReceived);
 
         // Kit Select Fix
         MinecraftForge.EVENT_BUS.register(new KitSelectorFixEvent());

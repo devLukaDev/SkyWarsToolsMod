@@ -1,6 +1,8 @@
 package org.devlukadev.skywarstoolsmod.features.tablevels;
 
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
@@ -34,6 +36,12 @@ public class TabRowRenderContext {
         Matcher matcher = TEAMS_CAGE_TP.matcher(event.message.getFormattedText());
         if (matcher.find()) {
             max = 0;
+
+            NetHandlerPlayClient nh = Minecraft.getMinecraft().thePlayer.sendQueue;
+            TabColumnWidths.recompute(
+                    Minecraft.getMinecraft().fontRendererObj,
+                    nh.getPlayerInfoMap()
+            );
         };
     }
 

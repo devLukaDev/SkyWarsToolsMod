@@ -3,6 +3,8 @@ package org.devlukadev.skywarstoolsmod.features.tablevels;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import org.devlukadev.skywarstoolsmod.SkyWarsToolsMod;
+import org.devlukadev.skywarstoolsmod.features.tags.Tag;
+import org.devlukadev.skywarstoolsmod.features.tags.TagManager;
 import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 import org.devlukadev.skywarstoolsmod.utils.NickDetector;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.responses.SkyWarsResponse;
@@ -38,8 +40,14 @@ public class TabColumnWidths {
                 nicked = false;
             }
 
+            boolean tagged = false;
+            Tag tag = TagManager.checkForTags(p.getGameProfile().getId());
+            if (tag != null) {
+                tagged = true;
+            }
 
-            List<String> segs = TabStringConstructor.resolveSegments(resp, originalName, nicked);
+            List<String> segs = TabStringConstructor.resolveSegments(resp, originalName, nicked, tagged);
+
             if (max == null) max = new int[segs.size()];
 
             for (int i = 0; i < segs.size(); i++) {
@@ -48,8 +56,9 @@ public class TabColumnWidths {
         }
 
         if (max != null) {
-            for (int i = 0; i < max.length; i++)
-                max[i] += SkyWarsToolsMod.config.levelsGutter; // small gutter between columns
+            for (int i = 0; i < max.length; i++) {
+                if (max[i] > 0) max[i] += SkyWarsToolsMod.config.levelsGutter;
+            }
         }
         widths = max != null ? max : new int[0];
     }

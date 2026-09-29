@@ -11,6 +11,9 @@ import org.devlukadev.skywarstoolsmod.features.tablevels.SkyWarsRequestCache;
 import org.devlukadev.skywarstoolsmod.features.tablevels.TabColumnWidths;
 import org.devlukadev.skywarstoolsmod.features.tablevels.TabRowRenderContext;
 import org.devlukadev.skywarstoolsmod.features.tablevels.TabStringConstructor;
+import org.devlukadev.skywarstoolsmod.features.tags.Tag;
+import org.devlukadev.skywarstoolsmod.features.tags.TagManager;
+import org.devlukadev.skywarstoolsmod.utils.ChatLib;
 import org.devlukadev.skywarstoolsmod.utils.LocationUtil;
 import org.devlukadev.skywarstoolsmod.utils.NickDetector;
 import org.devlukadev.skywarstoolsmod.utils.fetchutils.responses.SkyWarsResponse;
@@ -55,7 +58,13 @@ public class TabLevelsMixin {
             nicked = false;
         }
 
-        List<String> segments = TabStringConstructor.resolveSegments(resp, originalName, nicked);
+        boolean tagged = false;
+        Tag tag = TagManager.checkForTags(networkPlayerInfoIn.getGameProfile().getId());
+        if (tag != null) {
+            tagged = true;
+        }
+        List<String> segments = TabStringConstructor.resolveSegments(resp, originalName, nicked, tagged);
+
         String plain = String.join("", segments);
 
         // stash for the upcoming drawStringWithShadow call
